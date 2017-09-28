@@ -1,12 +1,15 @@
 ## JS 单元测试
 1. Node.js及npm环境
- * [Node.js及npm集成环境](https://github.com/mochajs/mocha)---[GIT：Node.js](https://github.com/nodejs/node)---[GIT：npm](https://github.com/npm/npm)
- * [淘宝 NPM 镜像](https://npm.taobao.org) ---[GIT：cnpm](https://github.com/cnpm/cnpm)
+ * [Node.js及npm集成环境](https://github.com/mochajs/mocha)---[Node.js（git）](https://github.com/nodejs/node)---[GIT：npm](https://github.com/npm/npm)
+ * [淘宝 NPM 镜像](https://npm.taobao.org) ---[cnpm（git）](https://github.com/cnpm/cnpm)
 2. 测试框架
- * [AVA测试框架](https://github.com/avajs/ava-docs/blob/master/zh_CN/readme.md)
-     * [ava及nyc举例](http://blog.csdn.net/dongshaoshuai/article/details/51684256)
+ * [AVA测试框架](https://github.com/avajs/ava-docs/blob/master/zh_CN/readme.md)（附中文文档）
+     * [ava-practice](http://i5ting.github.io/ava-practice/)
+     * [ava及nyc举例](http://blog.csdn.net/dongshaoshuai/article/details/51684256)
+     * [使用 AVA 做自动化测试](http://www.bijishequ.com/detail/438720?p=)---[源码](https://github.com/Barrior/ava-testing-examples)
+     * [使用 ava 和 jsdom 做前端测试](https://segmentfault.com/a/1190000005834279)
  * [mocha框架](https://github.com/mochajs/mocha)
-     * [测试框架 Mocha 实例教程——阮一峰](http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html)---[GIT：教程demo](https://github.com/ruanyf/mocha-demos)
+     * [测试框架 Mocha 实例教程——阮一峰](http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html)---[教程demo（git）](https://github.com/ruanyf/mocha-demos)
 
 
 3. 断言库

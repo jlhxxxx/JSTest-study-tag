@@ -12,7 +12,7 @@ ___
 
 <h3 id='1'> 1. Node.js及npm环境 </h3>
 
- * [Node.js及npm集成环境](https://github.com/mochajs/mocha)---[Node.js（git）](https://github.com/nodejs/node)---[GIT：npm](https://github.com/npm/npm)
+ * [Node.js及npm集成环境](https://github.com/mochajs/mocha)---[Node.js（git）](https://github.com/nodejs/node)---[npm（git）](https://github.com/npm/npm)
  * [淘宝 NPM 镜像](https://npm.taobao.org) ---[cnpm（git）](https://github.com/cnpm/cnpm)
  
 <h3 id='2'>2. 测试框架 </h3>

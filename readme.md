@@ -28,11 +28,12 @@ ___
 
 <h3 id='3'> 3. 断言库 </h3>
 
- * [chai](https://github.com/chaijs/chai)
- * [expect](https://github.com/Automattic/expect.js)
- * [should](https://github.com/shouldjs/should.js)
+ * [chai](https://github.com/chaijs/chai)---支持TDD(assert)、BDD(expect、should)
+ * [expect](https://github.com/Automattic/expect.js)---支持assert、should
+ * [should](https://github.com/shouldjs/should.js)---支持assert
+ * [assert](https://nodejs.org/api/assert.html)---Node.js 自带-核心-默认
 
-<h4 id='4'> 4. 测试覆盖率工具 </h4>
+<h3 id='4'> 4. 测试覆盖率工具 </h3>
 
  * [istanbuljs/nyc](https://github.com/istanbuljs/nyc)
      * [多进程下的测试覆盖率](http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/)

@@ -4,6 +4,7 @@
  * [淘宝 NPM 镜像](https://npm.taobao.org) ---[cnpm（git）](https://github.com/cnpm/cnpm)
 2. 测试框架
  * [AVA测试框架](https://github.com/avajs/ava-docs/blob/master/zh_CN/readme.md)（附中文文档） 
+     * 111
      * [ava-practice](http://i5ting.github.io/ava-practice/)
      * [ava及nyc举例](http://blog.csdn.net/dongshaoshuai/article/details/51684256)
      * [使用 AVA 做自动化测试](http://www.bijishequ.com/detail/438720?p=)---[源码](https://github.com/Barrior/ava-testing-examples)

@@ -39,4 +39,4 @@ ___
      * [多进程下的测试覆盖率](http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/)
      * [Node.js单元测试、集成测试、基准测试以及代码覆盖率测试方面总结——*ava+nyc*](http://ourjs.com/detail/5738493888feaf2d031d24fa)
      * [测试用例：mocha，should，istanbul——*fibonacci数列例子*](http://wiki.jikexueyuan.com/project/node-lessons/mocha-should-istanbul.html)
-     * 
+     * 待添加

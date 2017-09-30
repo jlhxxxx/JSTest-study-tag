@@ -6,7 +6,7 @@
 > 以下是没用的内容，仅仅保留一些格式
 
 <p align="center">
-  <a href="www.baidu.com">
+  <a href="https://www.baidu.com">
     <img src="https://cldup.com/xFVFxOioAU.svg" alt="Mocha test framework"/>
   </a>
     <img src="https://cldup.com/xFVFxOioAU.svg" alt="Mocha test framework"/>

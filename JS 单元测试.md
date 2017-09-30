@@ -16,7 +16,8 @@ ___
 
 <!-- /TOC -->
 
->**推荐使用 ava+nyc+Node.js 或 mocha+chai+nyc+Node.js**
+> **推荐使用 ava+nyc+Node.js 或 mocha+chai+nyc+Node.js**
+> [前端库](https://www.awesomes.cn/repos/Applications/Testings)
 
 ## 1. Node.js 单元测试
 
@@ -34,12 +35,14 @@ ___
      * [使用 ava 和 jsdom 做前端测试](https://segmentfault.com/a/1190000005834279)
  * [mocha](https://github.com/mochajs/mocha) 
      * [测试框架 Mocha 实例教程——阮一峰](http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html)---[教程demo（git）](https://github.com/ruanyf/mocha-demos)
+     * [用Mocha，Chai进行Node.js测试](http://www.html-js.com/article/1875)
  * [Jasmine](https://jasmine.github.io/)
  * [QUnit](http://qunitjs.com/)
 
 ### 1.3 断言库 
 
  * [chai](https://github.com/chaijs/chai)---支持TDD(assert)、BDD(expect、should)
+    * [Chai.js断言库API中文文档](http://www.jianshu.com/p/f200a75a15d2)
  * [expect](https://github.com/Automattic/expect.js)---支持assert、should
  * [should](https://github.com/shouldjs/should.js)---支持assert
  * [assert](https://nodejs.org/api/assert.html)---Node.js 自带-核心-默认
@@ -54,8 +57,9 @@ ___
 ## 2. 网页测试
 
 ### 2.1 JsUnit
- * [JsUnit](http://www.jsunit.net/)
+ * [JsUnit下载](http://www.jsunit.net/)
  * [JsUnit教程](http://www.javawebentry.com/html/639.html)
+ * [使用JsUnit和JSMock的JavaScript测试驱动开发](http://www.infoq.com/cn/articles/javascript-tdd)
 
 ### 2.2 QUnit
  * [QUnit](http://qunitjs.com/)

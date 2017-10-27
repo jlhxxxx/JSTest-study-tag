@@ -1,5 +1,7 @@
 ## JMeter 测试 redmine
 
+[本文链接](https://github.com/jlhxxxx/JSTest-study-tag/blob/master/JMeter%E5%AE%9E%E8%B7%B5%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95.md)
+
 ### 录制“登录”脚本
 * badbody 录制没问题，脚本执行报错
     ![](2017-10-26-16-29-29.png)

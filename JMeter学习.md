@@ -1,6 +1,6 @@
 # JMeter
 
-
+[本文链接](https://github.com/jlhxxxx/JSTest-study-tag/blob/master/JMeter%E5%AD%A6%E4%B9%A0.md) [测试笔记](https://github.com/jlhxxxx/JSTest-study-tag/blob/master/JMeter%E5%AE%9E%E8%B7%B5%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95.md)
 
 ## 一、操作手册解读 [User's Manual](http://jmeter.apache.org/usermanual/index.html)
 * 基础：1、2、3、4、5；
@@ -60,3 +60,9 @@
 
 * 性能测试报告内容
     <p align="center"><img src=2017-10-24-09-14-32.png></p>
+
+## 三、基于 Ant 的 JMeter 性能自动化测试初探
+* 参考文章：[基于 Ant 的 JMeter 性能自动化测试](http://blog.csdn.net/wetest_tencent/article/details/51154419)
+* 简要流程就是安装好 ant 后，拷贝 ant-JMeter-1.1.1.jar ，建立对应目录并填写 build.xml 配置文件，在 build.xml 目录下执行 ant 命令即可。最后生成的 html 看起来逼格很高。
+![](2017-11-03-11-19-20.png)
+* 因为之前的 redmine 脚本批量建的问题都已经删除了，所以这里有报错。 Ant 自动化测试的好处就是可以批量运行多个脚本,省去了一个个运行繁琐的步骤。但是前提就是**一定要写好脚本，并调试通过**。

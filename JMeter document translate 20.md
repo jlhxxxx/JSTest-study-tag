@@ -174,3 +174,453 @@ JMeter 提供一个工具来帮助建立各种内置函数的函数调用，只�
 
 <h3 id="counter">__counter</h3>
 
+计数器每次调用会生成一个新值，从 1 开始，每次加 1。计数器可以配置成对每个虚拟用户独立的，也可以配置成对所有用户公用的。如果每个用户的值分开计数，通常用于计算测试计划的执行次数。全局计数器通常用于计算请求的次数。
+
+计数器使用一个整型变量来保存计数，允许的最大值为 2,147,483,647。
+
+计数器函数实例是完全独立的。全局计数器 - “`FALSE`” - 的每个实例都是独立维护的。
+
+**`__counter` 函数在同一个迭代中的多次调用不会进一步增加值。**  
+如果您想对每个采样器计数，请使用预处理器（例如[用户参数](http://jmeter.apache.org/usermanual/component_reference.html#User_Parameters)）中的功能。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+第一个参数 | `TRUE` 如果您希望每个虚拟用户的计数器保持独立并与其他用户分开。 `FLASE` 全局计数器。 | 是
+第二个参数 | 重用此函数创建的值的引用名称。<br>存储的值的格式为 `${refName}`。<br>这允许你保留一个计数器，并在多个地方引用它的值。 | 否
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="threadNum">__threadNum</h3>
+
+threadNum 函数只是返回当前正在执行的线程编号。线程编号独立于线程组，这意味着从该函数的角度来看，一个线程组中的线程＃1 与另一个线程组中的线程＃1 是没有区别的。
+
+这个函数没有参数。
+
+用法示例：
+
+    ${__threadNum}
+返回 1 到在包含线程组中配置的运行线程的最大值之间的数字。
+>这个函数在任何配置元件（例如用户定义的变量）中都不起作用，因为它们是在一个单独的线程中运行的。在测试计划中也不能使用。
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="intSum">__intSum</h3>
+
+intSum 函数可用于计算两个或更多个整数值之和。
+>引用名称是可选的，但不能是有效的整数。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+第一个参数 | 第一个整数值 | 是
+第二个参数 | 第二个整数值 | 是
+第 n 个参数 | 第 n 个整数值 | 否
+最后一个参数 | 重用此函数计算值的引用名称。如果该参数被指定，引用名称必须包含至少一个非数字字符，否则将被视为另一个要添加的整数值 | 否
+
+例子：
+
+    ${__intSum(2,5,MYVAR)}
+将返回 7（2 + 5）并将结果存储在 MYVAR 变量中。所以 `${MYVAR}` 将等于 7。
+
+    ${__intSum(2,5,7)}
+将返回 14（2 + 5 + 7）并将结果存储在 MYVAR 变量中。
+
+    ${__intSum(1,2,5,${MYVAR})}
+如果 MYVAR 值等于 8，1 + 2 + 5 + ${MYVAR}，返回 16。
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="longSum">__longSum</h3>
+
+longSum 函数可用于计算两个或更多个长整型值之和，当计算值不在 -2147483648 到 2147483647 之间，使用此函数而不是 __intSum。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+第一个参数 | 第一个长整型值 | 是
+第二个参数 | 第二个长整型值 | 是
+第 n 个参数 | 第 n 个长整型值 | 否
+最后一个参数 | 重用此函数计算值的引用名称。如果该参数被指定，引用名称必须包含至少一个非数字字符，否则将被视为另一个要添加的长整型值 | 否
+
+例子：
+
+    ${__longSum(2,5,MYVAR)}
+将返回 7（2 + 5）并将结果存储在 MYVAR 变量中。所以 `${MYVAR}` 将等于 7。
+
+    ${__longSum(2,5,7)}
+将返回 14（2 + 5 + 7）并将结果存储在 MYVAR 变量中。
+
+    ${__longSum(1,2,5,${MYVAR})}
+如果 MYVAR 值等于 8，1 + 2 + 5 + ${MYVAR}，返回 16。 
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="StringFromFile">__StringFromFile</h3>
+
+StringFromFile 函数可以用来从文本文件中读取字符串。这对于运行需要大量可变数据的测试非常有用。例如，在测试银行应用程序时，可能需要 100 或 1000 个不同的帐号。
+
+另请参阅可能更易于使用的 [CSV Data Set Config 测试元件](http://jmeter.apache.org/usermanual/component_reference.html#CSV_Data_Set_Config)。但是，目前不支持多个输入文件。
+
+每次调用该函数都会从文件中读取下一行。所有的线程共享相同的实例，所以不同的线程会读取不同的行。到达文件末尾时，除非达到最大循环次数，否则将从头开始重新读取。如果在一个测试脚本中对该函数多次引用，每此引用都将独立打开文件，即使文件名相同。【如果要在其他地方再次使用该值，请为每个函数调用使用不同的变量名称。】
+>函数实例在线程之间共享，并且无论线程​​是否需要下一行输入，该文件都会（重新）打开，因此使用 `threadNumber` 作为文件名的一部分将导致不可预知的行为。
+
+如果打开或读取文件时发生错误，函数会返回字符串“`**ERR**`”。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+文件名称 | 文件名称的路径。（可以使用相对于 JMeter 启动目录的相对路径）如果要使用可选的序列号，路径名称应该适合转换成十进制格式。看下面的例子。 | 是
+变量名称 | 引用名称 - `refName` - 用于重用由此函数创建的值。存储该值的格式为 `${refName}`。默认值是“`StringFromFile_`”。 | 否
+开始序列号 | 初始序列号（如果省略，结束序列号将被视为循环计数） | 否
+结束序列号 | 终止序列号（如果省略，序列号可以不受限制地增加下去） | 否
+
+文件名称参数在文件打开或重新打开时被解析。
+
+引用名称参数（如果支持）在每次执行函数时被解析。
+
+**使用序列号：**
+
+使用可选的序列号时，路径名称将使用 `java.text.DecimalFormat` 的格式字符串。当前的序列号将作为唯一的参数传入。如果没有指定可选的开始序列号，就使用路径名称作为起始值。有用的格式序列如下：
+
+  * `#` 插入不带前导零或空格的数字
+  * `000` 如有必要，插入带有前导零的三位数字
+
+  ><h4>格式字符串的使用</h4>
+  >以下是几个格式字符串以及它们将生成的对应序列。
+  >
+  > * `pin#'.'dat`
+  >
+  >   生成不带前导零的序列，`.` 还是 `.`：`pin1.dat`，...，`pin9.dat`，`pin10.dat`，...，`pin9999.dat`
+pin000' 。
+  >
+  > * `pin000'.'dat`
+  >
+  >   生成带前导零的序列，同时保持 `.`。当数字位数超过三位时，序列将使用更多位数的数字：`pin001.dat`，... `pin099.dat`，...，`pin999.dat`，...，`pin9999.dat`
+  >
+  > * `pin'.'dat#`
+  >
+  >   生成不带前导零的附加数字，同时保持 `.`：`pin.dat1`，...，`pin.dat9`，...，`pin.dat999`
+
+如果需要的位数多于格式字符数，数字将根据需要进行扩展。  
+**要防止格式字符被解释，请将其包含在单引号中。请注意，“`.`”是一个格式字符，必须用单引号引起来** （尽管 `#.` 和 `000.` 在工作区能按预期的方式工作，因为它被视为小数点，而小数点也是“`.`”）。  
+在其他语言环境（例如 `fr`）中，小数点是“`,`” - 这意味着“`#.`”会变成“`nnn,`”。  
+有关完整的细节，请参阅 DecimalFormat （十进制格式）的文档。  
+如果路径名称不包含任何特殊的格式字符，则将当前的序号直接附加到名称上，否则将根据格式化指令插入数字。  
+如果起始序列号被忽略，并且指定了结束序列号，则结束序列号将被解释为循环计数，并且该文件将被使用循环计数的最大次数。在这种情况下，文件名不是格式化的。  
+`${__StringFromFile(PIN#'.'DAT,,1,2)}` 读取 `PIN1.DAT`, `PIN2.DAT`  
+`${__StringFromFile(PIN.DAT,,,2)}` 读取 `PIN.DAT` 两次  
+注意上面 `PIN.DAT` 中的“`.`”不应被引号包含。在这种起始序列号被省略的情况下，文件名完全按原样使用。
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="machineName">__machineName</h3>
+
+machineName 函数返回本地主机名称。它使用 Java 方法 `InetAddress.getLocalHost()` 并将值传递给 `getHostName()`。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+变量名称 | 重用此函数计算的值的引用名称 | 否
+例子：
+    
+    ${__machineName()}
+返回机器的主机名称
+
+    ${__machineName}
+返回机器的主机名称
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="machineIP">__machineIP</h3>
+
+machineIP 函数返回本地IP地址。它使用 Java 方法`InetAddress.getLocalHost()` 并将其值传递给 `getHostAddress()`。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+变量名称 | 重用此函数计算的值的引用名称 | 否
+例子：
+
+    ${__machineIP()}
+返回机器的 IP 地址
+
+    ${__machineIP}
+返回机器的 IP 地址
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="javaScript">__javaScript</h3>
+
+javaScript 函数执行一段 JavaScript（不是 Java！）代码并返回它的值。
+
+JMeter Javascrip t函数调用独立的 JavaScript 解释器。Javascript 被当作脚本语言使用，所以可以做相应的计算等。
+>在 JMeter 中，javaScript 并不是最好的脚本语言。如果你的测试计划需要大量的线程，建议使用`__jexl3` 或`__groovy` 函数。
+
+对于 Nashorn 引擎，请参阅[ Java 平台标准版 Nashorn 用户指南](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/)。
+
+对于 Rhino 引擎，请参阅[Mozilla Rhino 概述](http://www.mozilla.org/rhino/overview.html)。
+
+以下变量可用于脚本：
+  * `log` - 函数的[记录](https://www.slf4j.org/api/org/slf4j/Logger.html)
+  * `ctx` - [JMeterContext](http://jmeter.apache.org/api/org/apache/jmeter/threads/JMeterContext.html) 对象
+  * `vars` - [JMeterVariables](http://jmeter.apache.org/api/org/apache/jmeter/threads/JMeterVariables.html) 对象
+  * `threadName` - 包含当前线程名称的字符串
+  * `sampler` - 当前[采样器](http://jmeter.apache.org/api/org/apache/jmeter/samplers/Sampler.html)对象（如果有的话）
+  * `samplerResult` - 之前的 [SampleResult](http://jmeter.apache.org/api/org/apache/jmeter/samplers/SampleResult.html) 对象（如果有的话）
+  * `props` - JMeterProperties（类 [java.util.Properties](https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html)）对象
+
+Rhinoscript 允许通过其 Packages 对象访问静态方法。请参阅 [Java 脚本](https://wiki.openjdk.java.net/display/Nashorn/Rhino+Migration+Guide) 文档。例如，可以像这样访问 JMeterContextService 静态方法：`Java.type("org.apache.jmeter.threads.JMeterContextService").getTotalThreads()`。
+
+>JMeter 不是浏览器，不能解释下载页面中的 JavaScript。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+表达式 | 要执行的JavaScript表达式。例如：<br><ul><li>`new Date()` - 返回当前日期和时间</li><li>`Math.floor(Math.random()*(${maxRandom}+1))` - 一个介于 `0` 和变量 `maxRandom` 之间的随机数</li><li>`${minRandom}+Math.floor(Math.random()*(${maxRandom}-${minRandom}+1))` - 变量 `minRandom` 和 `maxRandom` 之间的随机数</li><li>`"${VAR}"=="abcd"` | 是
+变量名称 | 重用此函数计算的值的引用名称 | 否
+>请记住为文本字符串和 JMeter 变量添加必要的引号。另外，如果表达式有逗号，请确保将其转义。例如：
+>
+>     ${__javaScript('${sp}'.slice(7\,99999))}
+>`7` 之后的逗号被转义了。
+
+例子：
+
+    ${__javaScript(new Date())}
+返回 `Sat Jan 09 2016 16:22:15 GMT+0100 (CET)` 
+
+    ${__javaScript(new Date(),MYDATE)}
+返回 `Sat Jan 09 2016 16:22:15 GMT+0100 (CET)` 并将其存储在变量 `MYDATE` 下 
+
+    ${__javaScript(Math.floor(Math.random()*(${maxRandom}+1)),MYRESULT)}
+使用 `maxRandom` 变量，返回 `0` 和 `maxRandom` 之间的随机值并将其存储在  `MYRESULT` 中
+
+    ${__javaScript(${minRandom}+Math.floor(Math.random()*(${maxRandom}-${minRandom}+1)),MYRESULT)}
+使用 `maxRandom` 和 `minRandom` 变量，返回 `maxRandom` 和 `minRandom` 之间的随机值并将其存储在 `MYRESULT` 中
+
+    ${__javaScript("${VAR}"=="abcd",MYRESULT)}
+将 `VAR` 变量的值与 `abcd` 进行比较，返回 `true` 或 `false` 并将结果存储在 `MYRESULT` 中
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="Random">__Random</h3>
+
+random 函数返回一个介于给定最小值和最大值之间的随机数。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+最小值 | 一个数字 | 是
+最大值 | 一个更大的数字 | 是
+变量名称 | 重用此函数计算的值的引用名称 | 否
+例子：
+
+    ${__Random(0,10)}
+返回一个 0 到 10 之间的随机数
+
+    ${__Random(0,10, MYVAR)}
+返回一个 0 到 10 之间的随机数，并将其存储在 `MYVAR`中。`${MYVAR}`将包含此随机数
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="RandomDate">__RandomDate</h3>
+
+RandomDate 函数返回一个位于给定开始日期和结束日期值之间的随机日期。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+时间格式 | DateTimeFormatter 的格式字符串（默认为 `yyyy-MM-dd`） | 否
+开始日期 | 开始日期，现在是默认值 | 否
+结束日期 | 结束日期 | 是
+用于格式的区域设置 | 语言环境的字符串格式。语言代码必须是小写。国家代码必须大写。分隔符必须是下划线，例如 `en_EN`。请参阅 [http://www.oracle.com/technetwork/java/javase/javase7locales-334809.html]( http://www.oracle.com/technetwork/java/javase/javase7locales-334809.html)。如果省略，则默认情况下该函数使用 Apache JMeter 当前语言环境。 | 否
+变量名称 | 要设置的变量名称 | 否
+例子：
+
+    ${__RandomDate(,,2050-07-08,,)}
+返回从现在到 `2050-07-08` 之间一个随机的日期。例如 `2039-06-21` 
+
+    ${__RandomDate(dd MM yyyy,,08 07 2050,,)}
+将返回一个自定义格式的随机日期，例如 `04 03 2034`
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="RandomString">__RandomString</h3>
+
+RandomString 函数返回一个 chars 长度内的随机字符串。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+长度 | 生成字符串的长度 | 是
+使用的字符 | 用于生成字符串的字符 | 否
+变量名称 | 重用此函数计算的值的引用名称 | 否
+例子：
+
+    ${__RandomString(5)}
+返回随机的可读或不可读的 5 个字符
+
+    ${__RandomString(10,abcdefg)}
+将返回从 `abcdefg` 集合中挑选的 10 个字符的随机字符串，如 `cdbgdbeebd` 或 `adbfeggfad`，...
+
+    ${__RandomString(6,a12zeczclk, MYVAR)}
+从 `a12zeczclk` 集合中返回一个由 6 个字符组成的随机字符串，并将结果存储在 `MYVAR` 中，`MYVAR` 将包含像 `2z22ak` 或 `z11kce` 这样的字符串，...
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="RandomFromMultipleVars">__RandomFromMultipleVars</h3>
+
+RandomFromMultipleVars 函数根据 Source Variables 提供的变量值返回一个随机值。
+
+变量可以是单值或多值的，它们可以由以下提取器生成：
+  * [正则表达式提取器](http://jmeter.apache.org/usermanual/component_reference.html#Regular_Expression_Extractor)
+  * [CSS/JQuery 提取器](http://jmeter.apache.org/usermanual/component_reference.html#CSS/JQuery_Extractor)
+  * [JSON 提取器](http://jmeter.apache.org/usermanual/component_reference.html#JSON_Extractor)
+  * [XPath 断言](http://jmeter.apache.org/usermanual/component_reference.html#XPath_Assertion)
+
+多值变量就是，当你设置 `-1` 作为`匹配数字`所提取的值。当n = 1，2，3...时会创建相应匹配号变量 `varName_matchNr`，并为每个值创建变量 `varName_n`。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+来源变量 | 变量名称包含的值将用作随机计算的输入，用 `|` 分隔 | 是
+变量名称 | 重用此函数计算的值的引用名称 | 否
+例子：
+
+    ${__RandomFromMultipleVars(val)}
+根据变量 val 的内容返回一个随机的字符串，不管它们是否是多值的
+
+    ${__RandomFromMultipleVars(val1|val2)}
+根据变量 val1 和 val2 的内容返回一个随机字符串，不管它们是否为多值
+
+    ${__RandomFromMultipleVars(val1|val2, MYVAR)}
+根据变量 val1 和 val2 的内容返回一个随机字符串，不管它们是否为多值，并将结果存储在 `MYVAR` 中 
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="UUID">__UUID</h3>
+
+UUID 函数返回伪随机类型为 4 的通用唯一标识符（UUID）。
+
+没有参数。
+
+例子：
+
+    ${UUID()}
+将返回具有以下格式的 UUID：`c69e0dd1-ac6b-4f2b-8d59-5d4e8743eecd`
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="CSVRead">__CSVRead</h3>
+
+CSVRead 函数从 CSV 文件返回一个字符串（注意与 [StringFromFile](#StringFromFile) 的区别）。
+
+注：JMeter 支持多个文件名。
+
+**大多数情况下，较新的 [CSV Data Set Config 元件](http://jmeter.apache.org/usermanual/component_reference.html#CSV_Data_Set_Config)更容易使用。**
+
+对某个文件名第一次读取时，文件被打开并读取到内部数组。空行将被视为文件结尾 - 这允许使用尾部注释。
+
+后续对同一文件名的所有引用使用相同的内部数组。注意，文件名是区分大小写的，即使操作系统不区分大小写，所以 `CSVRead(abc.txt,0)` 和 `CSVRead(aBc.txt,0)` 会引用不同的内部数组。
+
+`*ALIAS` 功能允许同一个文件被打开多次，并且允许较短的文件名。
+
+每个线程都有自己的内部指针，指向文件数组中的当前行。当一个线程第一次引用文件时，它将被分配到数组中的下一个空闲行，所以每个线程将访问与其他所有线程不同的行（除非线程数多于数组中的行）。
+
+>该函数默认情况下以逗号分割行。如果要输入包含逗号的列，需要通过设置 `csvread.delimiter` 属性将分隔符更改为不出现在任何列数据中的字符。
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+文件名称 | 要读取的文件（或 `*ALIAS`） | 是
+列号 | 文件中的列号。 `0` 为第一列，`1`为第二列，以此类推。"`next`" - 转到文件的下一行。 `*ALIAS` - 打开一个文件并指派一个别名 | 是
+|
+
+例如，你可以设置一些变量如下：
+  * COL1a `${__CSVRead(random.txt,0)}`
+  * COL2a `${__CSVRead(random.txt,1)}${__CSVRead(random.txt,next)}`
+  * COL1b `${__CSVRead(random.txt,0)}`
+  * COL2b `${__CSVRead(random.txt,1)}${__CSVRead(random.txt,next)}`
+
+这将从一行中读取两列，从下一行中读取两列。如果所有变量都在相同的用户参数预处理器上定义，那么这些行将是连续的。否则的话，另外一个线程可能会读取下一行。
+>该函数不适用于大文件，因为它会将整个文件存储在内存中。对于较大的文件，请使用 [CSV Data Set Config 元件](http://jmeter.apache.org/usermanual/component_reference.html#CSV_Data_Set_Config) 或 [StringFromFile](#StringFromFile)。
+
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="property">__property</h3>
+
+property 函数返回 JMeter 属性的值。如果找不到属性值，并且没有提供默认值，则返回属性名称。当提供默认值时，可以不需要函数名称——参数可以设置为 null，并且将被忽略。
+
+例如：
+  * `${__property(user.dir)}` - 返回 `user.dir` 的值
+  * `${__property(user.dir,UDIR)}` - 返回 `user.dir` 的值并保存在 `UDIR` 中
+  * `${__property(abcd,ABCD,atod)}` - 返回属性 `abcd` 的值（如果没有定义，则返回“`atod`”）并保存在 `ABCD` 中
+  * `${__property(abcd,,atod)}` - 返回属性 `abcd`的值（如果未定义，则返回“`atod`”）但不保存
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+属性名称 | 要检索的属性名称 | 是
+变量名称 | 重用此函数计算的值的引用名称 | 否
+默认值 | 属性的默认值 |  否
+
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="threadNum">__</h3>
+
+
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+第一个参数 |  | 是
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="threadNum">__</h3>
+
+
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+第一个参数 |  | 是
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="threadNum">__</h3>
+
+
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+第一个参数 |  | 是
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="threadNum">__</h3>
+
+
+
+#### 参数（Parameters）
+---
+属性（Attribute）| 描述| 是否必须
+---------|----------|---------
+第一个参数 |  | 是
+[【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
+
+<h3 id="threadNum">__</h3>

@@ -51,7 +51,7 @@ JMeter 的函数是一些特殊值，它们可以填充在测试树的任何采�
 | 计算 | [longSum](#longSum)                | 计算长整形数（long）的和                                                                               | 2.3.2        |
 | 计算 | [Random](#Random)                 | 生成随机数                                                                       | 1.9          |
 | 计算 | [RandomDate](#RandomDate)             | 在指定日期范围内生成随机日期                                              | 3.3          |
-| 计算 | [RandomFromMultipleVars](#RandomFromMultipleVars) | 从由 `\|` 分隔的一组变量值中随机提取一个元素                         | 3.1          |
+| 计算 | [RandomFromMultipleVars](#RandomFromMultipleVars) | 从由 <code>\|</code> 分隔的一组变量值中随机提取一个元素                         | 3.1          |
 | 计算 | [RandomString](#RandomString)           | 生成随机字符串                                                                       | 2.6          |
 | 计算 | [UUID](#UUID)                   | 生成随机的类型为 4 的通用唯一标识符（UUID）                                                                  | 2.9          |
 | 脚本   | [groovy](#groovy)                 | 执行 Groovy 脚本                                                                            | 3.1          |
@@ -515,7 +515,7 @@ RandomFromMultipleVars 函数根据 Source Variables 提供的变量值返回一
 
 属性（Attribute）| 描述| 是否必须
 ---------|----------|---------
-来源变量 | 变量名称包含的值将用作随机计算的输入，用 `\|` 分隔 | 是
+来源变量 | 变量名称包含的值将用作随机计算的输入，用 <code>\|</code> 分隔 | 是
 变量名称 | 重用此函数计算的值的引用名称 | 否
 
 例子：
@@ -751,9 +751,9 @@ VAR_5=null
 
 属性（Attribute）| 描述| 是否必须
 ---------|----------|---------
-要拆分的字符串 | 一个要拆分的字符串，例如“`a\|b\|c`” | 是
+要拆分的字符串 | 一个要拆分的字符串，例如“<code>a\|b\|c</code>” | 是
 变量名称 | 重用此函数计算的值的引用名称 | 是
-分隔符 | 分隔符，例如`\|`。如果省略，则使用`,`。注意 `,` 需要 `\,` 来转义。 | 否
+分隔符 | 分隔符，例如<code>\|</code>。如果省略，则使用`,`。注意 `,` 需要 `\,` 来转义。 | 否
 
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
 

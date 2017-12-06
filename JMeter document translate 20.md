@@ -23,10 +23,11 @@ JMeter 的函数是一些特殊值，它们可以填充在测试树的任何采�
 
     ${VARIABLE}
 **如果引用了未定义的变量或函数，那么 JMeter 并不会报告或者记录错误信息——引用返回值就是引用自身。例如，如果 `UNDEF` 没有被定义为变量，`${UNDEF}` 的返回值就是 `${UNDEF}`。** 变量和函数（包括属性）都是区分大小写的。**JMeter 会剔除变量名称中的空格，例如 `${__Random(1,63, LOTTERY )}` 中的变量‘　`LOTTERY `　’会被‘`LOTTERY`’取代。**
+
 >属性与变量不一样。变量对线程而言是局部的；属性是针对所有线程的，属性需要使用 `__P` 或 `__property` 函数来引用。
 
 >在 Windows 路径变量（例如 `C:\test\${test}`）前使用 `\` 时，要确保加上 `\` 来转义，否则 JMeter 将不能解释变量，所以要这样写：`C:\\test\\${test}`。  
-还有一种方法，就是使用 `/` 作为路径分隔符，例如 `C:/test/${test}`——Windows 的 Java 虚拟机在必要时会将它转换成路径分隔符。
+>还有一种方法，就是使用 `/` 作为路径分隔符，例如 `C:/test/${test}`——Windows 的 Java 虚拟机在必要时会将它转换成路径分隔符。
 
 <p id="functions_list">函数列表，不严格的按类型划分：</p>
 
@@ -86,6 +87,7 @@ JMeter 有两种函数：用户定义的静态值（或变量）和内建函数�
 这种类型的替换可以不用函数来实现，但是这样就没有那么方便和直观了。用户可以创建默认配置元件来填充采样器中的空值。变量可以替换任何给定值的一部分，而不只是填充空值。
 
 用户可以通过使用内建函数在运行时根据之前的响应数据、函数所在线程、当前时间和其他资源计算出新的变量值。这些变量值在测试过程中会根据每个请求动态刷新。
+
 >函数被线程共享。在测试计划中每次函数的调用，都由一个单独的函数实例来处理。
 
 ## 20.2 函数和变量可以用在哪？
@@ -106,6 +108,7 @@ JMeter 有两种函数：用户定义的静态值（或变量）和内建函数�
 * log functions
 
 配置元件是由独立线程处理的。因此像 `__threadNum` 这样的函数在一些测试元件（例如用户定义的变量）中不能正常地工作。同样要注意在用户定义的变量（UDV）中定义的变量，在（UDV）元件被处理前是不能使用的。
+
 >当在 SQL 代码（或其他）中引用变量/函数时，要记得给文本字符串添加必要的引号，即使用：
 >
 >       SELECT item from table where name='${VAR}'
@@ -134,9 +137,11 @@ JMeter 有两种函数：用户定义的静态值（或变量）和内建函数�
 函数可以引用参数和其他函数，例如 `${__XPath(${__P(xpath.file),${XPATH})}` 使用“`xpath.file`”的值作为文件名，使用变量 `XPATH` 的内容作为搜索表达式。
 
 JMeter 提供一个工具来帮助建立各种内置函数的函数调用，只需使用复制-粘贴就可以实现。它不会自动为你转义，因为函数可以作为其他函数的参数，应该只对文本内容进行转义。
+
 >如果一个字符串既包含反斜杠（‘`\`’）又包含函数或者变量引用，出现在‘`$`’或‘`,`’或‘`\`’之前的反斜杠会被移除。这种操作对于包含逗号或者 `${` 的嵌套函数是有必要的。如果一个字符串不包含函数或者变量引用，那么在‘`$`’或‘`,`’或‘`\`’之前的反斜杠不会被移除。
 
 变量或函数的值可以用 [`__logn()`](#logn) 函数来报告，`__logn()` 函数在要报告的变量被定义之后可以在测试计划的任何地方被引用。除此之外，Java 请求采样器可以用来生成一个包含变量引用的采样；其输出能在合适的监听器中显示。注意也可以通过在查看结果树中使用 [Debug Sampler](http://jmeter.apache.org/usermanual/component_reference.html#Debug_Sampler) 来显示变量的值。
+
 >如果用和内建函数同样的名称定义一个用户静态变量，那么定义的静态变量将覆盖同名内建函数。
 
 ## 20.4 函数助手对话框
@@ -196,6 +201,7 @@ regexFunction 函数可以使用任意正则表达式（用户提供的）来解
 ---------|----------|---------
 第一个参数 | `TRUE` 如果您希望每个虚拟用户的计数器保持独立并与其他用户分开。 `FLASE` 全局计数器。 | 是
 第二个参数 | 重用此函数创建的值的引用名称。<br>存储的值的格式为 `${refName}`。<br>这允许你保留一个计数器，并在多个地方引用它的值。 | 否
+
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
 
 <h3 id="threadNum">__threadNum</h3>
@@ -208,6 +214,7 @@ threadNum 函数只是返回当前正在执行的线程编号。线程编号独�
 
     ${__threadNum}
 返回 1 到线程组中配置的运行线程的最大值之间的数字。
+
 >这个函数在任何配置元件（例如用户定义的变量）中都不起作用，因为它们是在一个单独的线程中运行的。在测试计划中也不能使用。
 
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
@@ -215,6 +222,7 @@ threadNum 函数只是返回当前正在执行的线程编号。线程编号独�
 <h3 id="intSum">__intSum</h3>
 
 intSum 函数可用于计算两个或更多个整数值之和。
+
 >引用名称是可选的，但不能是有效的整数。
 
 #### 参数（Parameters）
@@ -272,6 +280,7 @@ StringFromFile 函数可以用来从文本文件中读取字符串。这对于�
 另请参阅可能更易于使用的 [CSV Data Set Config 测试元件](http://jmeter.apache.org/usermanual/component_reference.html#CSV_Data_Set_Config)。但是，目前不支持多个输入文件。
 
 每次调用该函数都会从文件中读取下一行。所有的线程共享相同的实例，所以不同的线程会读取不同的行。到达文件末尾时，除非达到最大循环次数，否则将从头开始重新读取。如果在一个测试脚本中引用该函数多次，每此引用都将独立打开文件，即使文件名相同。（如果要在其他地方再次使用该值，请为每个函数调用使用不同的变量名称。）
+
 >函数实例在线程之间共享，并且无论线程​​是否需要下一行输入，该文件都会（重新）打开，因此使用 `threadNumber` 作为文件名的一部分将导致不可预知的行为。
 
 如果打开或读取文件时发生错误，函数会返回字符串“`**ERR**`”。
@@ -302,7 +311,6 @@ StringFromFile 函数可以用来从文本文件中读取字符串。这对于�
   > * `pin#'.'dat`
   >
   >   生成不带前导零的序列，`.` 还是 `.`：`pin1.dat`，...，`pin9.dat`，`pin10.dat`，...，`pin9999.dat`
-pin000' 。
   >
   > * `pin000'.'dat`
   >
@@ -333,6 +341,7 @@ machineName 函数返回本地主机名称。它使用 Java 方法 `InetAddress.
 属性（Attribute）| 描述| 是否必须
 ---------|----------|---------
 变量名称 | 重用此函数计算的值的引用名称 | 否
+
 例子：
     
     ${__machineName()}
@@ -352,6 +361,7 @@ machineIP 函数返回本地 IP 地址。它使用 Java 方法`InetAddress.getLo
 属性（Attribute）| 描述| 是否必须
 ---------|----------|---------
 变量名称 | 重用此函数计算的值的引用名称 | 否
+
 例子：
 
     ${__machineIP()}
@@ -367,6 +377,7 @@ machineIP 函数返回本地 IP 地址。它使用 Java 方法`InetAddress.getLo
 javaScript 函数执行一段 JavaScript（不是 Java！）代码并返回它的值。
 
 JMeter Javascrip t函数调用独立的 JavaScript 解释器。Javascript 被当作脚本语言使用，所以可以做相应的计算等。
+
 >在 JMeter 中，javaScript 并不是最好的脚本语言。如果你的测试计划需要大量的线程，建议使用`__jexl3` 或`__groovy` 函数。
 
 对于 Nashorn 引擎，请参阅[ Java 平台标准版 Nashorn 用户指南](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/)。
@@ -392,6 +403,7 @@ Rhinoscript 允许通过其 Packages 对象访问静态方法。请参阅 [Java 
 ---------|----------|---------
 表达式 | 要执行的JavaScript表达式。例如：<br><ul><li>`new Date()` - 返回当前日期和时间</li><li>`Math.floor(Math.random()*(${maxRandom}+1))` - 一个介于 `0` 和变量 `maxRandom` 之间的随机数</li><li>`${minRandom}+Math.floor(Math.random()*(${maxRandom}-${minRandom}+1))` - 介于变量 `minRandom` 和 `maxRandom` 之间的随机数</li><li>`"${VAR}"=="abcd"`</li></ul> | 是
 变量名称 | 重用此函数计算的值的引用名称 | 否
+
 >请记住为文本字符串和 JMeter 变量添加必要的引号。另外，如果表达式有逗号，请确保将其转义。例如：
 >
 >     ${__javaScript('${sp}'.slice(7\,99999))}
@@ -427,6 +439,7 @@ random 函数返回一个介于给定最小值和最大值之间的随机数。
 最小值 | 一个数字 | 是
 最大值 | 一个更大的数字 | 是
 变量名称 | 重用此函数计算的值的引用名称 | 否
+
 例子：
 
     ${__Random(0,10)}
@@ -450,6 +463,7 @@ RandomDate 函数返回一个位于给定开始日期和结束日期值之间的
 结束日期 | 结束日期 | 是
 用于格式的区域设置 | 语言环境的字符串格式。语言代码必须是小写。国家代码必须大写。分隔符必须是下划线，例如 `en_EN`。请参阅 [http://www.oracle.com/technetwork/java/javase/javase7locales-334809.html]( http://www.oracle.com/technetwork/java/javase/javase7locales-334809.html)。如果省略，则默认情况下该函数使用 Apache JMeter 当前语言环境。 | 否
 变量名称 | 要设置的变量名称 | 否
+
 例子：
 
     ${__RandomDate(,,2050-07-08,,)}
@@ -471,6 +485,7 @@ RandomString 函数返回一个 chars 长度内的随机字符串。
 长度 | 生成字符串的长度 | 是
 使用的字符 | 用于生成字符串的字符 | 否
 变量名称 | 重用此函数计算的值的引用名称 | 否
+
 例子：
 
     ${__RandomString(5)}
@@ -502,6 +517,7 @@ RandomFromMultipleVars 函数根据 Source Variables 提供的变量值返回一
 ---------|----------|---------
 来源变量 | 变量名称包含的值将用作随机计算的输入，用 `\|` 分隔 | 是
 变量名称 | 重用此函数计算的值的引用名称 | 否
+
 例子：
 
     ${__RandomFromMultipleVars(val)}
@@ -552,7 +568,7 @@ CSVRead 函数从 CSV 文件返回一个字符串（注意与 [StringFromFile](#
 ---------|----------|---------
 文件名称 | 要读取的文件（或 `*ALIAS`） | 是
 列号 | 文件中的列号。 `0` 为第一列，`1`为第二列，以此类推。"`next`" - 转到文件的下一行。 `*ALIAS` - 打开一个文件并指派一个别名 | 是
-|
+
 
 例如，你可以设置一些变量如下：
   * COL1a `${__CSVRead(random.txt,0)}`
@@ -561,8 +577,8 @@ CSVRead 函数从 CSV 文件返回一个字符串（注意与 [StringFromFile](#
   * COL2b `${__CSVRead(random.txt,1)}${__CSVRead(random.txt,next)}`
 
 这将从一行中读取两列，从下一行中读取两列。如果所有变量都在相同的前置处理器的用户参数上定义，那么这些行将是连续的。否则的话，另外一个线程可能会读取下一行。
->该函数不适用于大文件，因为它会将整个文件存储在内存中。对于较大的文件，请使用 [CSV Data Set Config 元件](http://jmeter.apache.org/usermanual/component_reference.html#CSV_Data_Set_Config) 或 [StringFromFile](#StringFromFile)。
 
+>该函数不适用于大文件，因为它会将整个文件存储在内存中。对于较大的文件，请使用 [CSV Data Set Config 元件](http://jmeter.apache.org/usermanual/component_reference.html#CSV_Data_Set_Config) 或 [StringFromFile](#StringFromFile)。
 
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
 
@@ -651,6 +667,7 @@ logn 函数记录一条日志，并返回空字符串。
 BeanShell 函数执行传递给它的脚本，并返回结果。
 
 **有关使用 BeanShell 的完整详细信息，请参考 BeanShell 网站：[http://www.beanshell.org/](http://www.beanshell.org/)**
+
 >注意，测试脚本中每个独立的函数调用都使用不同的解释器，但是后续的调用使用相同的解释器。这意味着变量在不同的函数的调用中会持续存在。
 
 单个函数实例可以从多个线程中调用。但是函数 `execute()` 的方法是同步的。
@@ -743,6 +760,7 @@ VAR_5=null
 <h3 id="XPath">__XPath</h3>
 
 XPath 函数读取一个 XML 文件并匹配 XPath。每次调用该函数时，都会返回下一个匹配项。到达文件末尾后，会返回到开始。如果没有匹配的节点，该函数将返回空字符串，同时将一条警告消息写入 JMeter 日志文件。
+
 >注意，整个 NodeList 会被保存在内存中。
 
 例子：
@@ -756,6 +774,7 @@ XPath 函数读取一个 XML 文件并匹配 XPath。每次调用该函数时，
 ---------|----------|---------
 待解析的 XML 文件 | 一个待解析的 XML 文件 | 是
 XPath | 一个 XPath 表达式用来匹配 XML 文件中的节点 | 是
+
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
 
 <h3 id="setProperty">__setProperty</h3>
@@ -831,6 +850,7 @@ Jexl 也可以创建类和调用其方法，例如：
 
     i= 5 / 2;
     i.intValue(); // or use i.longValue()
+
 > JMeter 允许表达式包含多个语句。
 
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
@@ -868,6 +888,7 @@ Jexl 也可以创建类和调用其方法，例如：
 
     i= 5 / 2;
     i.intValue(); // or use i.longValue()
+
 >JMeter 允许表达式包含多个语句。
 
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
@@ -1023,6 +1044,7 @@ unescape 函数将返回将 Java 转义过的字符串反转义的结果。另�
 属性（Attribute）| 描述| 是否必须
 ---------|----------|---------
 要转码的字符串 | 待转码的使用 URL 编码字符的字符串 | 是
+
 [【返回标题】](#20-函数和变量) [【返回函数列表】](#functions_list)
 
 <h3 id="FileToString">__FileToString</h3>

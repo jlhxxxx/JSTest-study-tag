@@ -559,7 +559,7 @@
 
 ## 模块
 
-* 自己创建模块时要注意命名，不能和 Python 自带的模块名称冲突。例如，系统自带了sys模块，自己的模块就不可命名为sys.py，否则将无法导入系统自带的sys模块。
+* 自己创建模块时要注意命名，不能和 Python 自带的模块名称冲突。例如，系统自带了 sys 模块，自己的模块就不可命名为 `sys.py`，否则将无法导入系统自带的 sys 模块。
 * 每一个包目录下面都会有一个 `__init__.py` 的文件，这个文件是必须存在的，否则，Python 就把这个目录当成普通目录，而不是一个包。`__init__.py` 可以是空文件，也可以有 Python 代码，因为 `__init__.py` 本身就是一个模块，而它的模块名就是包名。
 
       #!/usr/bin/env python3
@@ -583,7 +583,7 @@
       if __name__=='__main__':
           test()
 
-  第1行和第2行是标准注释，第1行注释可以让这个 hello.py 文件直接在Unix/Linux/Mac 上运行，第2行注释表示.py 文件本身使用标准 UTF-8 编码；  
+  第1行和第2行是标准注释，第1行注释可以让这个 `hello.py` 文件直接在 Unix/Linux/Mac 上运行，第2行注释表示 .py 文件本身使用标准 UTF-8 编码；  
   第4行是一个字符串，表示模块的文档注释，任何模块代码的第一个字符串都被视为模块的文档注释；  
   第6行使用 `__author__` 变量把作者写进去，这样当你公开源代码后别人就可以瞻仰你的大名；
 
@@ -628,9 +628,9 @@
                 self.score = score
     `__init__`方法的第一个参数永远是 `self`，表示创建的实例本身，因此，在`__init__`方法内部，就可以把各种属性绑定到 `self`，因为 `self` 就指向创建的实例本身。
 
-    和普通的函数相比，在类中定义的函数只有一点不同，就是第一个参数永远是实例变量 `self`，并且，调用时，不用传递该参数。
+    和普通的函数相比，在**类中定义的函数**只有一点不同，就是第一个参数永远是实例变量 `self`，并且，调用时，不用传递该参数。
 
-  * 可以直接在 `Student`类的内部定义访问数据的函数，这样，就把“数据”给封装起来了。这些封装数据的函数是和Student类本身是关联起来的，我们称之为类的方法：
+  * 可以直接在 `Student` 类的内部定义访问数据的函数，这样，就把“数据”给封装起来了。这些封装数据的函数是和Student类本身是关联起来的，我们称之为类的方法：
 
         class Student(object):
 
@@ -640,7 +640,7 @@
 
         def print_score(self):
             print('%s: %s' % (self.name, self.score))
-    要定义一个方法，除了第一个参数是 `self`外，其他和普通函数一样。要调用一个方法，只需要在实例变量上直接调用，除了 `self`不用传递，其他参数正常传入。
+    要定义一个方法，除了第一个参数是 `self` 外，其他和普通函数一样。要调用一个方法，只需要在实例变量上直接调用，除了 `self` 不用传递，其他参数正常传入。
 
 * 访问限制
   * 如果要让内部属性不被外部访问，可以把属性的名称前加上两个下划线`__`，将变量变成私有：
@@ -712,7 +712,7 @@
         >>> getattr(obj, 'power') # 获取属性'power'
         <bound method MyObject.power of <__main__.MyObject object at 0x10077a6a0>>
         >>> fn = getattr(obj, 'power') # 获取属性'power'并赋值到变量fn
-        >>> fn # fn指向obj.power
+        >>> fn  # fn指向obj.power
         <bound method MyObject.power of <__main__.MyObject object at 0x10077a6a0>>
         >>> fn() # 调用fn()与调用obj.power()是一样的
         81
@@ -737,7 +737,7 @@
 ## 面向对象高级编程
 * 使用`__slots__`限制实例可绑定的属性
 
-  正常情况下，当我们定义了一个 class，创建了一个 class 的实例后，我们可以给该实例绑定任何属性和方法。但是，给一个实例绑定的方法，对另一个实例是不起作用的。为了给所有实例都绑定方法，可以给class绑定方法：
+  正常情况下，当我们定义了一个 class，创建了一个 class 的实例后，我们可以给该实例绑定任何属性和方法。但是，给一个实例绑定的方法，对另一个实例是不起作用的。为了给所有实例都绑定方法，可以给 class 绑定方法：
 
       >>> def set_score(self, score):
       ...     self.score = score
@@ -746,7 +746,7 @@
   Python 允许在定义 class 的时候，定义一个特殊的`__slots__`变量，来限制该class实例能添加的属性：
 
       class Student(object):
-          __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称
+          __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称（包括 class 中定义的属性）
   但要注意，`__slots__`定义的属性仅对当前类实例起作用，对继承的子类是不起作用的。
 * 使用 @property 对属性增加校验
 
@@ -868,7 +868,7 @@
                 raise AttributeError('\'Student\' object has no attribute \'%s\'' % attr)
   * `__call__`
 
-    一个对象实例可以有自己的属性和方法，当我们调用实例方法时，我们用instance.method()来调用。任何类，只需要定义一个`__call__()` 方法，就可以直接对实例进行调用。
+    一个对象实例可以有自己的属性和方法，当我们调用实例方法时，我们用 `instance.method()` 来调用。任何类，只需要定义一个`__call__()` 方法，就可以直接对实例进行调用。
 
         class Student(object):
             def __init__(self, name):
@@ -957,7 +957,7 @@
 
   * metaclass
 
-    除了使用type()动态创建类以外，要控制类的创建行为，还可以使用 metaclass。当我们定义了类以后，就可以根据这个类创建出实例，所以：先定义类，然后创建实例。但是如果我们想创建出类呢？那就必须根据 metaclass 创建出类，所以：先定义 metaclass，然后创建类。
+    除了使用 type( ) 动态创建类以外，要控制类的创建行为，还可以使用 metaclass。当我们定义了类以后，就可以根据这个类创建出实例，所以：先定义类，然后创建实例。但是如果我们想创建出类呢？那就必须根据 metaclass 创建出类，所以：先定义 metaclass，然后创建类。
 
     连接起来就是：先定义 metaclass，就可以创建类，最后创建实例。换句话说，你可以把类看成是 metaclass 创建出来的“实例”。
 
@@ -991,7 +991,7 @@
 
 * 错误处理
 
-  当我们认为某些代码可能会出错时，就可以用 try 来运行这段代码，如果执行出错，则后续代码不会继续执行，而是直接跳转至错误处理代码，即 except 语句块（可以在 except 语句块后面加一个 else，当没有错误发生时，会自动执行else语句），执行完 except 后，如果有 finally 语句块，则执行 finally 语句块，至此，执行完毕。如果没有错误发生，except 语句块不会被执行，但是 finally 仍会被执行（可以没有finally语句）。
+  当我们认为某些代码可能会出错时，就可以用 try 来运行这段代码，如果执行出错，则后续代码不会继续执行，而是直接跳转至错误处理代码，即 except 语句块（可以在 except 语句块后面加一个 else，当没有错误发生时，会自动执行 else语句），执行完 except 后，如果有 finally 语句块，则执行 finally 语句块，至此，执行完毕。如果没有错误发生，except 语句块不会被执行，但是 finally 仍会被执行（可以没有 finally 语句）。
 
       try:
           print('try...')
@@ -1006,7 +1006,7 @@
       finally:
           print('finally...')
       print('END')
-  Python的错误其实也是class，所有的错误类型都继承自BaseException，所以在使用except时需要注意的是，它不但捕获该类型的错误，还把其子类也“一网打尽”。[常见的错误类型和继承关系看这里](https://docs.python.org/3/library/exceptions.html#exception-hierarchy)
+  Python 的错误其实也是 class，所有的错误类型都继承自 BaseException，所以在使用 except 时需要注意的是，它不但捕获该类型的错误，还把其子类也“一网打尽”。[常见的错误类型和继承关系看这里](https://docs.python.org/3/library/exceptions.html#exception-hierarchy)
 
   如果不捕获错误，自然可以让 Python 解释器来打印出错误堆栈，但程序也被结束了。既然我们能捕获错误，就可以把错误堆栈打印出来，然后分析错误原因，同时，让程序继续执行下去。Python 内置的 logging 模块可以非常容易地记录错误信息：
 
@@ -1018,7 +1018,7 @@
           except Exception as e:
               logging.exception(e)
 
-  Python的内置函数会抛出很多类型的错误，我们自己编写的函数也可以用 raise 抛出错误。raise 语句如果不带参数，就会把当前错误原样抛出。此外，在 except 中 raise一个 Error，还可以把一种类型的错误转化成另一种类型：
+  Python 的内置函数会抛出很多类型的错误，我们自己编写的函数也可以用 raise 抛出错误。raise 语句如果不带参数，就会把当前错误原样抛出。此外，在 except 中 raise一个 Error，还可以把一种类型的错误转化成另一种类型：
 
       try:
           10 / 0
@@ -1063,3 +1063,265 @@
       不使用 pdb 正常运行代码，程序会自动在 `pdb.set_trace()` 暂停并进入 pdb 调试环境，可以用命令 p 查看变量，或者用命令 c 继续运行。
   * 最爽的办法还是 IDE ，但是最后你会发现，logging才是终极武器。
 * 单元测试
+  * 编写
+    
+    编写单元测试时，我们需要编写一个测试类，从 `unittest.TestCase` 继承，以 `test` 开头的方法就是测试方法，不以 `test` 开头的方法不被认为是测试方法，测试的时候不会被执行。
+
+        import unittest
+
+        class TestDict(unittest.TestCase):
+
+            def test_init(self):
+                d = Dict(a=1, b='test')
+                self.assertEqual(d.a, 1)
+                ……
+    最常用的断言就是 `assertEqual()`、`assertTrue()`:
+
+        self.assertEqual(abs(-1), 1) # 断言函数返回的结果与 1 相等
+        self.assertTrue(isinstance(1, int))
+    另一种重要的断言就是期待抛出指定类型的 Error，比如通过 `d['empty']` 访问不存在的 key 时，断言会抛出 `KeyError`：
+
+        with self.assertRaises(KeyError):
+            value = d['empty']
+  * 运行
+
+    最简单的运行方式是在最后加上两行代码：
+
+        if __name__ == '__main__':
+            unittest.main()
+    这样就可以当做正常的 python 脚本运行。如：
+
+        python mydict_test.py
+
+    另一种方法是在命令行通过参数-m unittest直接运行单元测试：
+
+        $ python -m unittest mydict_test
+        .....
+        ----------------------------------------------------------------------
+        Ran 5 tests in 0.000s
+
+        OK
+    这是推荐的做法，因为这样可以一次批量运行很多单元测试，并且，有很多工具可以自动来运行这些单元测试。
+  * setUp 与 tearDown
+
+    可以在单元测试中编写两个特殊的 `setUp()` 和 `tearDown()` 方法。这两个方法会分别在每调用一个测试方法的前后分别被执行。
+* 文档测试
+
+  Python 内置的“文档测试”（doctest）模块可以直接提取注释中的代码并执行测试。doctest 严格按照 Python 交互式命令行的输入和输出来判断测试结果是否正确。只有测试异常的时候，可以用...表示中间一大段烦人的输出。
+
+      def fact(n):
+        '''
+        Calculate 1*2*...*n
+
+        >>> fact(1)
+        1
+        >>> fact(10)
+        3628800
+        >>> fact(-1)
+        Traceback (most recent call last):
+        ...
+        ValueError
+        '''
+        if n < 1:
+            raise ValueError()
+        if n == 1:
+            return 1
+        return n * fact(n - 1)
+
+      if __name__ == '__main__':
+        import doctest
+        doctest.testmod()
+
+## IO 编程
+* 文件读写
+  * 读文件
+
+    要以读文件的模式打开一个文件对象，使用Python内置的 [`open()`](https://docs.python.org/3/library/functions.html#open) 函数，传入文件名和标示符:
+
+        >>> f = open('/Users/michael/test.txt', 'r')
+    要读取二进制文件，比如图片、视频等等，用 `'rb'` 模式打开文件即可；要读取非 UTF-8 编码的文本文件，需要传入 `encoding` 参数；遇到有些编码不规范的文件，你可能会遇到 `UnicodeDecodeError`，`open()` 函数还接收一个 `errors` 参数，表示如果遇到编码错误后如何处理。最简单的方式是直接忽略：
+
+        >>> f = open('/Users/michael/gbk.txt', 'r', encoding='gbk', errors='ignore')
+    如果文件打开成功，接下来，调用 `read()` 方法可以一次读取文件的全部内容，Python 把内容读到内存，用一个 str 对象表示：
+
+        >>> f.read()
+        'Hello, world!'
+    最后一步是调用 `close()` 方法关闭文件。文件使用完毕后必须关闭，因为文件对象会占用操作系统的资源，并且操作系统同一时间能打开的文件数量也是有限的：
+
+        >>> f.close()
+    由于文件读写时都有可能产生 `IOError`，一旦出错，后面的 `f.close()` 就不会调用。所以，为了保证无论是否出错都能正确地关闭文件，我们可以使用 `try ... finally` 来实现：
+
+        try:
+            f = open('/path/to/file', 'r')
+            print(f.read())
+        finally:
+            if f:
+                f.close()
+    但是每次都这么写实在太繁琐，所以，Python 引入了 `with` 语句来自动帮我们调用 `close()` 方法：
+
+        with open('/path/to/file', 'r') as f:
+            print(f.read())
+    这和前面的 `try ... finally` 是一样的，但是代码更佳简洁，并且不必调用 `f.close()` 方法。
+
+    如果文件很小，`read()` 一次性读取最方便；如果不能确定文件大小，反复调用 `read(size)` 比较保险；如果是配置文件，调用 `readlines()` 最方便：
+
+        for line in f.readlines():
+            print(line.strip()) # 把末尾的'\n'删掉
+  * 写文件
+
+    写文件和读文件是一样的，唯一区别是调用open()函数时，传入标识符'w'或者'wb'表示写文本文件或写二进制文件：
+
+        >>> f = open('/Users/michael/test.txt', 'w')
+        >>> f.write('Hello, world!')
+        >>> f.close()
+    当我们写文件时，操作系统往往不会立刻把数据写入磁盘，而是放到内存缓存起来，空闲的时候再慢慢写入。只有调用 `close()` 方法时，操作系统才保证把没有写入的数据全部写入磁盘。
+
+    还是用with语句来得保险：
+
+        with open('/Users/michael/test.txt', 'w') as f:
+            f.write('Hello, world!')
+    要写入特定编码的文本文件，请给 `open()` 函数传入 `encoding` 参数，将字符串自动转换成指定编码。
+* [StringIO 和 BytesIO](https://docs.python.org/3/library/io.html)
+  * StringIO
+
+        >>> from io import StringIO
+        >>> f = StringIO()
+        >>> f.write('hello')
+        5
+        >>> f.write('world!')
+        6
+        >>> print(f.getvalue())
+        helloworld!
+
+        >>> f = StringIO('Hello!\nGoodbye!')
+        >>> while True:
+        ...     s = f.readline()
+        ...     if s == '':
+        ...         break
+        ...     print(s.strip())
+        ...
+        Hello!
+        Goodbye!
+  * BytesIO
+
+        >>> from io import BytesIO
+        >>> f = BytesIO()
+        >>> f.write('中文'.encode('utf-8'))
+        6
+        >>> print(f.getvalue())
+        b'\xe4\xb8\xad\xe6\x96\x87'
+
+        >>> f = BytesIO(b'\xe4\xb8\xad\xe6\x96\x87')
+        >>> f.read()
+        b'\xe4\xb8\xad\xe6\x96\x87'
+* 操作文件和目录
+
+      import os
+      # 查看当前目录的绝对路径:
+      >>> os.path.abspath('.')
+      '/Users/michael'
+      # 在某个目录下创建一个新目录，首先把新目录的完整路径表示出来:
+      >>> os.path.join('/Users/michael', 'testdir')
+      '/Users/michael/testdir'
+      # 然后创建一个目录:
+      >>> os.mkdir('/Users/michael/testdir')
+      # 删掉一个目录:
+      >>> os.rmdir('/Users/michael/testdir')
+      # 拆分目录
+      >>> os.path.split('/Users/michael/testdir/file.txt')
+      ('/Users/michael/testdir', 'file.txt')
+      # 拆分文件拓展名
+      >>> os.path.splitext('/path/to/file.txt')
+      ('/path/to/file', '.txt')
+      # 对文件重命名:
+      >>> os.rename('test.txt', 'test.py')
+      # 删掉文件:
+      >>> os.remove('test.py')
+
+  这些合并、拆分路径的函数并不要求目录和文件要真实存在，它们只对字符串进行操作。
+
+  列出当前目录下的所有目录，只需要一行代码：
+
+      >>> [x for x in os.listdir('.') if os.path.isdir(x)]
+      ['.lein', '.local', '.m2', '.npm', '.ssh', '.Trash', '.vim', 'Applications', 'Desktop', ...]
+  要列出所有的 .py 文件，也只需一行代码：
+
+      >>> [x for x in os.listdir('.') if os.path.isfile(x) and os.path.splitext(x)[1]=='.py']
+      ['apis.py', 'config.py', 'models.py', 'pymonitor.py', 'test_db.py', 'urls.py', 'wsgiapp.py']
+* 序列化：
+  * 我们把变量从内存中变成可存储或传输的过程称之为序列化，Python 提供了 `pickle` 模块来实现序列化
+
+    `pickle.dumps()` 方法把任意对象序列化成一个 bytes，然后，就可以把这个 `bytes` 写入文件。或者用另一个方法 `pickle.dump()` 直接把对象序列化后写入一个 file-like Object：
+
+        >>> import pickle
+        >>> d = dict(name='Bob', age=20, score=88)
+        >>> pickle.dumps(d)
+        b'\x80\x03}q\x00(X\x03\x00\x00\x00ageq\x01K\x14X\x05\x00\x00\x00scoreq\x02KXX\x04\x00\x00\x00nameq\x03X\x03\x00\x00\x00Bobq\x04u.'
+        >>> f = open('dump.txt', 'wb')
+        >>> pickle.dump(d, f)
+        >>> f.close()
+    当我们要把对象从磁盘读到内存时，可以先把内容读到一个 `bytes`，然后用 `pickle.loads()` 方法反序列化出对象，也可以直接用 `pickle.load()` 方法从一个 file-like Object 中直接反序列化出对象。我们打开另一个 Python 命令行来反序列化刚才保存的对象：
+
+        >>> f = open('dump.txt', 'rb')
+        >>> d = pickle.load(f)
+        >>> f.close()
+        >>> d
+        {'age': 20, 'score': 88, 'name': 'Bob'}
+  * JSON
+
+        >>> import json
+        >>> d = dict(name='Bob', age=20, score=88)
+        >>> json.dumps(d)
+        '{"age": 20, "score": 88, "name": "Bob"}'
+    `dumps()` 方法返回一个 str，内容就是标准的 JSON。类似的，`dump()` 方法可以直接把 JSON 写入一个 file-like Object。
+
+    要把 JSON 反序列化为 Python 对象，用 `loads()` 或者对应的 `load()` 方法，前者把 JSON 的字符串反序列化，后者从 file-like Object 中读取字符串并反序列化：
+
+        >>> json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+        >>> json.loads(json_str)
+        {'age': 20, 'score': 88, 'name': 'Bob'}
+  * [JSON 进阶](https://docs.python.org/3/library/json.html#json.dumps)
+
+        import json
+
+        class Student(object):
+            def __init__(self, name, age, score):
+                self.name = name
+                self.age = age
+                self.score = score
+
+        s = Student('Bob', 20, 88)
+        print(json.dumps(s))
+        运行代码，毫不留情地得到一个TypeError：
+
+        Traceback (most recent call last):
+          ...
+        TypeError: <__main__.Student object at 0x10603cc50> is not JSON serializable
+    前面的代码之所以无法把 `Student` 类实例序列化为 JSON，是因为默认情况下，`dumps()` 方法不知道如何将 `Student` 实例变为一个 JSON的 `{}` 对象。可选参数 `default` 就是把任意一个对象变成一个可序列为 JSON 的对象，我们只需要为 `Student` 专门写一个转换函数，再把函数传进去即可：(**注意：转换函数不属于类而是和类同级，要顶格**)
+
+        def student2dict(std):
+            return {
+                'name': std.name,
+                'age': std.age,
+                'score': std.score
+            }
+    这样，`Student` 实例首先被 `student2dict()` 函数转换成 `dict`，然后再被顺利序列化为 JSON：
+
+        >>> print(json.dumps(s, default=student2dict))
+        {"age": 20, "name": "Bob", "score": 88}
+    我们可以偷个懒，把任意class的实例变为dict：
+
+        print(json.dumps(s, default=lambda obj: obj.__dict__))
+    因为通常 class 的实例都有一个`__dict__`属性，它就是一个 dict，用来存储实例变量。也有少数例外，比如定义了`__slots__`的 class。
+
+    同样的道理，如果我们要把JSON反序列化为一个Student对象实例，loads()方法首先转换出一个dict对象，然后，我们传入的object_hook函数负责把dict转换为Student实例：
+
+        def dict2student(d):
+            return Student(d['name'], d['age'], d['score'])
+
+        >>> json_str = '{"age": 20, "score": 88, "name": "Bob"}'
+        >>> print(json.loads(json_str, object_hook=dict2student))
+        <__main__.Student object at 0x10cd3c190>
+
+## 进程和线程
+* 多进程

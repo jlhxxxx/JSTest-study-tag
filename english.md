@@ -12,3 +12,9 @@ people like  you  are  just  way  too  used  to  getting  your  own  way.——�
 Till death do us part.——直到死亡将我们分开。
 
 oppsite attract——异性相吸
+
+the first time ever I saw your face ,I saw the sun rose in your eyes .And the moon and stars were the gift you gave to the dark and the empty skies ,my love. To the dark and the empty skies.
+
+the straw that breaks the camel's back——压垮骆驼的稻草
+
+it's when your eyes,they climb onto your head

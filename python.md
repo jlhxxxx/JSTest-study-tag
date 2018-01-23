@@ -316,7 +316,7 @@
 * 迭代
   * 在 Python 中，迭代是通过 `for ... in` 来完成的
   * 默认情况下，dict 迭代的是 key。如果要迭代 value，可以用 `for value in d.values()`，如果要同时迭代 key 和 value，可以用 `for k, v in d.items()`。
-  * 如果要对 list 实现类似 Java 那样的下标循环怎么办？Python 内置的 enumerate 函数可以把一个 list 变成索引——元素对，这样就可以在 for循环中同时迭代索引和元素本身：
+  * 如果要对 list 实现类似 Java 那样的下标循环怎么办？Python 内置的 enumerate 函数可以把一个 list 变成索引——元素对，这样就可以在 for 循环中同时迭代索引和元素本身：
 
         >>> for i, value in enumerate(['A', 'B', 'C']):
         ...     print(i, value)
@@ -332,7 +332,7 @@
       >>> [m + n for m in 'ABC' for n in 'XYZ']
       ['AX', 'AY', 'AZ', 'BX', 'BY', 'BZ', 'CX', 'CY', 'CZ']
 
-* 生成器（generator） `()`，一边循环一遍计算
+* 生成器（generator） `()`，一边循环一边计算
 
       >>> g = (x * x for x in range(10))
       >>> g
@@ -439,22 +439,22 @@
                 return ax
             return sum
 
-        当我们调用lazy_sum()时，返回的并不是求和结果，而是求和函数
+        当我们调用 lazy_sum() 时，返回的并不是求和结果，而是求和函数
         >>> f = lazy_sum(1, 3, 5, 7, 9)
         >>> f
         <function lazy_sum.<locals>.sum at 0x101c6ed90>
 
-        调用函数f时，才真正计算求和的结果：
+        调用函数 f 时，才真正计算求和的结果：
         >>> f()
         25
 
-        当我们调用lazy_sum()时，每次调用都会返回一个新的函数，即使传入相同的参数：
+        当我们调用 lazy_sum() 时，每次调用都会返回一个新的函数，即使传入相同的参数：
         >>> f1 = lazy_sum(1, 3, 5, 7, 9)
         >>> f2 = lazy_sum(1, 3, 5, 7, 9)
         >>> f1==f2
         False
 
-  * 闭包——返回的函数并没有立刻执行，而是直到调用了f()才执行。返回闭包时牢记一点：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
+  * 闭包——返回的函数并没有立刻执行，而是直到调用了 f() 才执行。返回闭包时牢记一点：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
 
         def count():
             fs = []

@@ -187,8 +187,7 @@
 
   ```python
   >>> newlineRegex = re.compile('.*', re.DOTALL)
-  >>> newlineRegex.search('Serve the public trust.\nProtect the innocent.
-  \nUphold the law.').group()
+  >>> newlineRegex.search('Serve the public trust.\nProtect the innocent.\nUphold the law.').group()
   'Serve the public trust.\nProtect the innocent.\nUphold the law.'
   ```
 

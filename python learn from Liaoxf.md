@@ -3,7 +3,7 @@
 
 ## 输入和输出
 
-* `print()` 可接受多个字符串，用逗号“,”隔开，输出时逗号变成空格
+* `print()` 可接受多个字符串，用逗号“,”隔开，输出时逗号变成空格，print可选参数`end`和`spa`
 
         >>> print('100 + 200 =', 100 + 200)
         100 + 200 = 300
@@ -107,14 +107,14 @@
       ['Michael', 'Bob', 'Tracy']
       >>> len(classmates)
       3
-
+      
       # 正索引 0 开始
       >>> classmates[0]
       'Michael'
       # 倒索引 -1 开始
       >>> classmates[-1]
       'Tracy'
-
+      
       # 追加元素到末尾
       >>> classmates.append('Lisa')
       # 插入到指定位置（同正索引）
@@ -125,7 +125,7 @@
       >>> classmates.pop(1)
       # 替换直接用赋值语句
       >>> classmates[1] = 'Tom'
-
+      
       # 将一个序列转换成 list
       >>> list(range(5))
       [0, 1, 2, 3, 4]
@@ -155,7 +155,7 @@
       >>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
       >>> d['Michael']
       95
-
+      
       # 通过 in 判断 key 是否存在
       >>> 'Tom' in d
       False
@@ -163,11 +163,11 @@
       >>> d.get('Thomas')
       >>> d.get('Thomas', -1)
       -1
-
+      
       # 删除 key
       >>> d.pop('Bob')
       75
-
+      
       # 增加，通过赋值语句
       >>> d['Lisa'] = 99
 * set 一组 key 的集合，但不存储 value，同样 key 必须是不可变对象且唯一，可以做 `&`、`|` 等操作
@@ -176,12 +176,12 @@
       >>> s = set([1, 1, 2, 2, 3, 3])
       >>> s
       {1, 2, 3}
-
+      
       # 添加元素，add(key)
       >>> s.add(4)
       >>> s
       {1, 2, 3, 4}
-
+      
       # 删除元素，remove(key)
 * 定义一个函数要使用 `def` 语句，依次写出函数名、括号、括号中的参数和冒号 `:`，然后在缩进块中编写函数体，函数的返回值用 `return` 语句返回。
 
@@ -207,7 +207,7 @@
                 n = n - 1
                 s = s * x
             return s
-
+        
         >>> power(5)
         25
     定义默认参数要牢记一点：默认参数必须指向不变对象！
@@ -216,12 +216,12 @@
         def add_end(L=[]):
             L.append('END')
             return L
-
+        
         >>> add_end()
         ['END']
         >>> add_end()
         ['END', 'END']
-
+        
         # 修改后为
         def add_end(L=None):
             if L is None:
@@ -236,7 +236,7 @@
             for n in numbers:
                 sum = sum + n * n
             return sum
-
+        
         >>> calc(1,2,3)
         14
         >>> nums = [1, 2, 3]
@@ -250,7 +250,7 @@
 
         def person(name, age, **kw):
             print('name:', name, 'age:', age, 'other:', kw)
-
+        
         >>> person('Michael', 30)
         name: Michael age: 30 other: {}
         >>> person('Adam', 45, gender='M', job='Engineer')
@@ -281,7 +281,7 @@
         >>> args = (1, 2, 3, 4)
         >>> kw = {'d': 99, 'x': '#'}
         >>> f1(*args, **kw)
-        a = 1 b = 2 c = 3 args = (4,) kw = {'d': 99, 'x': '#'}
+        >>>   a = 1 b = 2 c = 3 args = (4,) kw = {'d': 99, 'x': '#'}
 
 * 函数递归
   * 使用递归函数的优点是逻辑简单清晰，缺点是过深的调用会导致栈溢出。
@@ -297,7 +297,7 @@
       ['Michael', 'Sarah', 'Tracy']
       >>> L[-2:]
       ['Bob', 'Jack']
-
+      
       >>> L = list(range(100))
       # 前10个数，每两个取一个
       >>> L[:10:2]
@@ -308,7 +308,7 @@
       # 原样复制
       >>> L[:]
       [0, 1, 2, 3, ..., 99]
-
+      
       # 字符串倒序排列（也可以间隔取值）
       >>> 'abcd'[::-1]
       'dcba'
@@ -353,7 +353,7 @@
               a, b = b, a + b
               n = n + 1
           return 'done'
-
+      
       >>> f = fib(6)
       >>> f
       <generator object fib at 0x104feaaa0>
@@ -387,7 +387,7 @@
 
         def add(x, y, f):
             return f(x) + f(y)
-
+        
         >>> add(-5, 6, abs)
         11
 
@@ -396,7 +396,7 @@
 
           def f(x):
               return x * x
-
+          
           >>> r = map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])
           >>> list(r)
           [1, 4, 9, 16, 25, 36, 49, 64, 81]
@@ -410,7 +410,7 @@
 
           def not_empty(s):
               return s and s.strip()
-
+          
           >>> list(filter(not_empty, ['A', '', 'B', None, 'C', '  ']))
           ['A', 'B', 'C']
       注意到 `filter()` 函数返回的也是一个 Iterator，也就是一个惰性序列，所以要强迫 `filter()` 完成计算结果，需要用 `list()` 函数获得所有结果并返回 list
@@ -438,16 +438,16 @@
                     ax = ax + n
                 return ax
             return sum
-
+        
         当我们调用 lazy_sum() 时，返回的并不是求和结果，而是求和函数
         >>> f = lazy_sum(1, 3, 5, 7, 9)
         >>> f
         <function lazy_sum.<locals>.sum at 0x101c6ed90>
-
+        
         调用函数 f 时，才真正计算求和的结果：
         >>> f()
         25
-
+        
         当我们调用 lazy_sum() 时，每次调用都会返回一个新的函数，即使传入相同的参数：
         >>> f1 = lazy_sum(1, 3, 5, 7, 9)
         >>> f2 = lazy_sum(1, 3, 5, 7, 9)
@@ -463,7 +463,7 @@
                     return i*i
                 fs.append(f)
             return fs
-
+        
         >>> f1, f2, f3 = count()
         >>> f1()
         9
@@ -482,7 +482,7 @@
             for i in range(1, 4):
                 fs.append(f(i)) # f(i)立刻被执行，因此i的当前值被传入f()
             return fs
-
+        
         >>> f1, f2, f3 = count()
         >>> f1()
         1
@@ -522,11 +522,11 @@
               print('call %s():' % func.__name__)
               return func(*args, **kw)                #step4：调用 func
           return wrapper                              #step2：调用 wrapper
-
+      
       @log        # 相当于 now = log(now)
       def now():
           print('2015-3-25')
-
+      
       >>> now()
       call now():
       2015-3-25
@@ -564,13 +564,13 @@
 
       #!/usr/bin/env python3
       # -*- coding: utf-8 -*-
-
+      
       ' a test module '
-
+      
       __author__ = 'Michael Liao'
-
+      
       import sys
-
+      
       def test():
           args = sys.argv
           if len(args)==1:
@@ -579,7 +579,7 @@
               print('Hello, %s!' % args[1])
           else:
               print('Too many arguments!')
-
+      
       if __name__=='__main__':
           test()
 
@@ -637,7 +637,7 @@
         def __init__(self, name, score):
             self.name = name
             self.score = score
-
+        
         def print_score(self):
             print('%s: %s' % (self.name, self.score))
     要定义一个方法，除了第一个参数是 `self` 外，其他和普通函数一样。要调用一个方法，只需要在实例变量上直接调用，除了 `self` 不用传递，其他参数正常传入。
@@ -724,7 +724,7 @@
       class Student(object):
           def __init__(self, name):
               self.name = name
-
+      
       s = Student('Bob')
       s.score = 90
 
@@ -755,7 +755,7 @@
           @property
           def score(self):
               return self._score
-
+      
           @score.setter
           def score(self, value):
               if not isinstance(value, int):
@@ -777,7 +777,7 @@
         class Student(object):
             def __init__(self, name):
                 self.name = name
-
+        
         >>> print(Student('Michael'))
         <__main__.Student object at 0x109afb190>
     打印出的不好看，使用`__str__`
@@ -787,7 +787,7 @@
                 self.name = name
             def __str__(self):
                 return 'Student object (name: %s)' % self.name
-
+        
         >>> print(Student('Michael'))
         Student object (name: Michael)
     然而，直接敲变量还是不好看：
@@ -810,10 +810,10 @@
         class Fib(object):
           def __init__(self):
               self.a, self.b = 0, 1 # 初始化两个计数器a，b
-
+        
           def __iter__(self):
               return self # 实例本身就是迭代对象，故返回自己
-
+        
           def __next__(self):
               self.a, self.b = self.b, self.a + self.b # 计算下一个值
               if self.a > 100000: # 退出循环的条件
@@ -830,7 +830,7 @@
                 for x in range(n):
                     a, b = b, a + b
                 return a
-
+        
         >>> f = Fib()
         >>> f[10]
         89
@@ -845,7 +845,7 @@
 
             def __init__(self):
                 self.name = 'Michael'
-
+        
             def __getattr__(self, attr):
                 if attr=='score':
                     return 99
@@ -873,10 +873,10 @@
         class Student(object):
             def __init__(self, name):
                 self.name = name
-
+        
             def __call__(self):
                 print('My name is %s.' % self.name)
-
+        
         >>> s = Student('Michael')
         >>> s() # self参数不要传入
         My name is Michael.
@@ -892,7 +892,7 @@
 
       for name, member in Month.__members__.items():
           print(name, '=>', member, ',', member.value)
-
+      
       Jan => Month.Jan , 1 ……
   value 属性则是自动赋给成员的 int 常量，默认从 1 开始计数。
 
@@ -953,7 +953,7 @@
     要创建一个class对象，type()函数依次传入3个参数：
     1. class的名称；
     2. 继承的父类集合，注意Python支持多重继承，如果只有一个父类，别忘了tuple的单元素写法；
-    1. class的方法名称与函数绑定，这里我们把函数fn绑定到方法名hello上。
+    3. class的方法名称与函数绑定，这里我们把函数fn绑定到方法名hello上。
 
   * metaclass
 
@@ -982,7 +982,7 @@
           >>> L.add(1)
           >> L
           [1]
-
+          
           >>> L2 = list()
           >>> L2.add(1)
           报错
@@ -1032,7 +1032,7 @@
             n = int(s)
             assert n != 0, 'n is zero!'
             return 10 / n
-
+        
         >>> foo('0')
     启动 Python 解释器时可以用 -O 参数来关闭 assert
 
@@ -1041,7 +1041,7 @@
 
         import logging
         logging.basicConfig(level=logging.INFO)
-
+        
         s = '0'
         n = int(s)
         logging.info('n = %d' % n)
@@ -1064,7 +1064,7 @@
   * 最爽的办法还是 IDE ，但是最后你会发现，logging才是终极武器。
 * 单元测试
   * 编写
-    
+
     编写单元测试时，我们需要编写一个测试类，从 `unittest.TestCase` 继承，以 `test` 开头的方法就是测试方法，不以 `test` 开头的方法不被认为是测试方法，测试的时候不会被执行。
 
         import unittest
@@ -1099,7 +1099,7 @@
         .....
         ----------------------------------------------------------------------
         Ran 5 tests in 0.000s
-
+        
         OK
     这是推荐的做法，因为这样可以一次批量运行很多单元测试，并且，有很多工具可以自动来运行这些单元测试。
   * setUp 与 tearDown
@@ -1112,7 +1112,7 @@
       def fact(n):
         '''
         Calculate 1*2*...*n
-
+      
         >>> fact(1)
         1
         >>> fact(10)
@@ -1127,7 +1127,7 @@
         if n == 1:
             return 1
         return n * fact(n - 1)
-
+      
       if __name__ == '__main__':
         import doctest
         doctest.testmod()
@@ -1192,7 +1192,7 @@
         6
         >>> print(f.getvalue())
         helloworld!
-
+        
         >>> f = StringIO('Hello!\nGoodbye!')
         >>> while True:
         ...     s = f.readline()
@@ -1210,7 +1210,7 @@
         6
         >>> print(f.getvalue())
         b'\xe4\xb8\xad\xe6\x96\x87'
-
+        
         >>> f = BytesIO(b'\xe4\xb8\xad\xe6\x96\x87')
         >>> f.read()
         b'\xe4\xb8\xad\xe6\x96\x87'
@@ -1289,11 +1289,11 @@
                 self.name = name
                 self.age = age
                 self.score = score
-
+        
         s = Student('Bob', 20, 88)
         print(json.dumps(s))
         运行代码，毫不留情地得到一个TypeError：
-
+        
         Traceback (most recent call last):
           ...
         TypeError: <__main__.Student object at 0x10603cc50> is not JSON serializable
@@ -1318,10 +1318,11 @@
 
         def dict2student(d):
             return Student(d['name'], d['age'], d['score'])
-
+        
         >>> json_str = '{"age": 20, "score": 88, "name": "Bob"}'
         >>> print(json.loads(json_str, object_hook=dict2student))
         <__main__.Student object at 0x10cd3c190>
 
 ## 进程和线程
+
 * 多进程

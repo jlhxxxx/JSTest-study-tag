@@ -270,7 +270,7 @@
 
 ## **import pyperclip** # *`copy()` and `paste()` functions that can send text to and receive text from your computer’s clipboard*
 
-```
+```python
 >>> import pyperclip
 >>> pyperclip.copy('Hello world!')
 >>> pyperclip.paste()
@@ -490,7 +490,7 @@ print(pprint.pformat(someDictionaryValue))
 
   ```python
   >>> newZip = zipfile.ZipFile('new.zip', 'w')
-  >>> newZip.write('spam.txt', compress_type=zipfile.ZIP_DEFLATED)
+  >>> newZip.write('spam.txt', compress_type = zipfile.ZIP_DEFLATED)
   ```
 
    If you want to simply add files to an existing ZIP file, pass `'a'`as the second argument to `zipfile.`
@@ -514,3 +514,102 @@ print(pprint.pformat(someDictionaryValue))
   'C:\\some\\new\\folders\\spam.txt'
   ```
 
+
+## import webbrowser # *opens a browser to a specific page*
+
+```python
+>>> import webbrowser
+>>> webbrowser.open('http://inventwithpython.com/')
+```
+
+## import [requests](http://requests.readthedocs.io/en/master/) # *easily download files from the Web*
+
+* **requests.get()** # function takes a string of a URL to download and returns a `Response` object which contains the response that the web server gave for your request.
+
+  ```python
+  >>> import requests
+  >>> res = requests.get('https://automatetheboringstuff.com/files/rj.txt')
+  >>> type(res)
+  <class 'requests.models.Response'>
+  >>> res.status_code == requests.codes.ok
+  True
+  >>> len(res.text)
+  178981
+  >>> print(res.text[:250])
+  ...
+  ```
+
+* **raise_for_status()** # This will raise an exception if there was an error downloading the file and will do nothing if the download succeeded. 
+
+  ```python
+  >>> res = requests.get('http://inventwithpython.com/page_that_does_not_exist')
+  >>> res.raise_for_status()
+  Traceback (most recent call last):
+  ...
+  ```
+
+  Always call `raise_for_status()` after calling `requests.get()`. 
+
+* **open()** and **write()** # you can save the web page to a file on your hard drive with the standard `open()` function and `write()` method. There are some slight differences. First, you must open the file in *write binary* mode by passing the string `'wb'` as the second argument to `open()`. Even if the page is in plaintext , you need to write binary data instead of text data in order to maintain the *Unicode encoding* of the text.
+
+  To write the web page to a file, you can use a `for` loop with the `Response` object’s `iter_content()` method.
+
+  ```python
+  >>> res = requests.get('https://automatetheboringstuff.com/files/rj.txt')
+  >>> res.raise_for_status()
+  >>> playFile = open('RomeoAndJuliet.txt', 'wb')
+  >>> for chunk in res.iter_content(100000):
+          playFile.write(chunk)
+
+  100000
+  78981
+  >>> playFile.close()
+  ```
+
+## import BeautifulSoup # *extracting information from an HTML page（can't not use regex）*
+
+* **bs4.BeautifulSoup()** # function needs to be called with a string containing the HTML it will parse and returns  a `BeautifulSoup` object. 
+
+  ```python
+  >>> import requests, bs4
+  >>> res = requests.get('http://nostarch.com')
+  >>> res.raise_for_status()
+  >>> noStarchSoup = bs4.BeautifulSoup(res.text)
+  >>> type(noStarchSoup)
+  <class 'bs4.BeautifulSoup'>
+  ```
+
+  ```python
+  >>> exampleFile = open('example.html')
+  >>> exampleSoup = bs4.BeautifulSoup(exampleFile)
+  >>> type(exampleSoup)
+  <class 'bs4.BeautifulSoup'>
+  ```
+
+* **select()** # passing a string of a [CSS *selector*](http://www.w3school.com.cn/cssref/css_selectors.asp) to find the element you are looking for and return a list of `Tag` objects. Calling `getText()` on the element returns the element’s text, or inner HTML. Tag values also have an `attrs` attribute that shows all the HTML attributes of the tag as a dictionary.
+
+  ```python
+  >>> import bs4
+  >>> exampleFile = open('example.html')
+  >>> exampleSoup = bs4.BeautifulSoup(exampleFile.read())
+  >>> elems = exampleSoup.select('#author')
+  >>> type(elems)
+  <class 'list'>
+  >>> type(elems[0])
+  <class 'bs4.element.Tag'>
+  >>> elems[0].getText()
+  'Al Sweigart'
+  >>> str(elems[0])
+  '<span id="author">Al Sweigart</span>'
+  >>> elems[0].attrs
+  {'id': 'author'}
+  ```
+
+* **get()** # The `get()` method for `Tag` objects makes it simple to access attribute values from an element. The method is passed a string of an attribute name and returns that attribute’s value. 
+
+  ```python
+  >>> elems[0].get('id')
+  'author'
+  ```
+
+  ​

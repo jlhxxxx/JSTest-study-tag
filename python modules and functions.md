@@ -566,7 +566,7 @@ print(pprint.pformat(someDictionaryValue))
   >>> playFile.close()
   ```
 
-## import BeautifulSoup # *extracting information from an HTML page（can't not use regex）*
+## import [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc.zh/) # *extracting information from an HTML page（can't not use regex）*
 
 * **bs4.BeautifulSoup()** # function needs to be called with a string containing the HTML it will parse and returns  a `BeautifulSoup` object. 
 
@@ -586,7 +586,7 @@ print(pprint.pformat(someDictionaryValue))
   <class 'bs4.BeautifulSoup'>
   ```
 
-* **select()** # passing a string of a [CSS *selector*](http://www.w3school.com.cn/cssref/css_selectors.asp) to find the element you are looking for and return a list of `Tag` objects. Calling `getText()` on the element returns the element’s text, or inner HTML. Tag values also have an `attrs` attribute that shows all the HTML attributes of the tag as a dictionary.
+* **select()** # passing a string of a [CSS *selector*](http://www.w3school.com.cn/cssref/css_selectors.asp) to find the element you are looking for and return a **list** of `Tag` objects. Calling `getText()` on the element returns the element’s text, or inner HTML. Tag values also have an `attrs` attribute that shows all the HTML attributes of the tag as a dictionary.
 
   ```python
   >>> import bs4
@@ -612,4 +612,40 @@ print(pprint.pformat(someDictionaryValue))
   'author'
   ```
 
-  ​
+
+## from selenium import webdriver # *lets Python directly control the browser by programmatically clicking links and filling in login information*
+
+Because it launches a web browser, it is a bit slower and hard to run in the **background** if, say, you just need to download some files from the Web.
+
+* **webdriver._driver_()** # When `webdriver.driver()` is called, the web browser starts up. Calling `type()` on the value `webdriver.driver()` reveals it’s of the `WebDriver` data type. 
+
+```python
+>>> from selenium import webdriver
+>>> browser = webdriver.Firefox()
+>>> type(browser)
+<class 'selenium.webdriver.firefox.webdriver.WebDriver'>
+>>> browser.get('http://inventwithpython.com')
+```
+
+* **find_element_\*** and **find_elements_\*** # The `find_element_*`methods return a single `WebElement` object, representing the first element on the page that matches your query. The `find_elements_*` methods return a list of `WebElement_*` objects for *every* matching element on the page.
+
+Once you have the `WebElement` object, you can find out more about it by reading the attributes or calling the methods in the table:
+
+| Attribute or method       | Description                                                  |
+| ------------------------- | ------------------------------------------------------------ |
+| `tag_name`                | The tag name, such as `'a'` for an `<a>` element             |
+| `get_attribute(`*name*`)` | The value for the element’s `name` attribute                 |
+| `text`                    | The text within the element, such as `'hello'` in `<span>hello</span>` |
+| `clear()`                 | For text field or text area elements, clears the text typed into it |
+| `is_displayed()`          | Returns `True` if the element is visible; otherwise returns `False` |
+| `is_enabled()`            | For input elements, returns `True` if the element is enabled; otherwise returns `False` |
+| `is_selected()`           | For checkbox or radio button elements, returns `True` if the element is selected; otherwise returns `False` |
+| `location`                | A dictionary with keys `'x'` and `'y'` for the position of the element in the page |
+
+* **click()** # This method can be used to follow a link, make a selection on a radio button, click a Submit button, or trigger whatever else might happen when the element is clicked by the mouse.
+* **send_keys()** # Sending keystrokes to text fields on a web page.
+* **submit()** # Calling this method on any element will have the same result as clicking the Submit button for the form that element is in.
+* **browser.back()** # Clicks the Back button.
+* **browser.forward()** # Clicks the Forward button.
+* **browser.refresh()** # Clicks the Refresh/Reload button.
+* **browser.quit()** # Clicks the Close Window button.

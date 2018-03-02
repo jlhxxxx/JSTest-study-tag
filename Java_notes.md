@@ -58,8 +58,8 @@
 ### 1.2 创建对象
 * 包括声明和分配内存
 
-   class-name class-var;
    ```java
+   class-name class-var;
    class-var =new class-name(arg-list);
    ```
    等价于
@@ -233,16 +233,18 @@ class classname extends superclass implements interface1,interface2...{
 * **参数化类型**
 ### 5.1 泛型基础
 * 只能用于引用类型
+
 * 泛型类型是否相同基于其类型实参，可声明多个类型实参
 
+  ```java
+  // 声明泛型
+  class class-name<type-param-list>{//....}
+  // 声明引用并创建实例
+  class-name<type-org-list> var-name=new class-name<type-org-list>(cons-arg-list);
+  // JDK7之后可简写
+  class-name<type-org-list> var-name=new class-name<>(cons-arg-list);
+  ```
 
-```java
-	声明泛型：
-	class class-name<type-param-list>{//....}
-	声明引用并创建实例：
-	class-name<type-org-list> var-name=new class-name<type-org-list>(cons-arg-list);
-	JDK7之后可简写：class-name<type-org-list> var-name=new class-name<>(cons-arg-list);
-```
 
 ### 5.2 约束类型
 ```java
@@ -252,27 +254,30 @@ class classname extends superclass implements interface1,interface2...{
 ### 5.3 通配符实参（？ 替换 T）
 * 不影响创建的对象类型，只是匹配任何有效的对象
 
-   boolean absEqual(NumFns<?> ob){
    ```java
-   	if(Math.abs(num.doubleValue())==Math.abs(ob.num.doubleValue())) 
-   		return true;
-   	return false;
+   boolean absEqual(NumFns<?> ob){
+     if(Math.abs(num.doubleValue())==Math.abs(ob.num.doubleValue())) 
+     return true;
+     return false;
    }
    ```
 ### 5.4 约束通配符
+
 ```java
-上层约束：
+// 上层约束
 <? extends superclass>
-下层约束：
+//	 下层约束
 <? super subclass>
 ```
 ### 5.5 泛型方法
+
 ```java
 <type-param-list> ret-type meth-name(param-list){//...}
-举例：
+// 举例
 static <T extends Comparable<T>,V extends T> boolean arraysEqual(T[] x,V[] y){//...}
 ```
 ### 5.6 泛型构造函数
+
 * 类不是泛型的构造函数也可以是泛型的
 
 ### 5.7 泛型接口
@@ -280,6 +285,7 @@ static <T extends Comparable<T>,V extends T> boolean arraysEqual(T[] x,V[] y){//
 
 		例如：class myClass implements containment<double>
 ### 5.8 一些泛型限制
+
 * 类型形参不能实例化
 * 静态成员不能使用由包含类声明的类型形参（？）
 * 不能实例化基类型为类型形参的数组，不能创建特定类型泛型引用的数组（？）
@@ -295,8 +301,8 @@ enum Transport{
 ```
 * Java 将枚举实现为类类型，但不能使用 new 实例化枚举
 
-   Transport tp;
    ```java
+   Transport tp;
    tp=Transport.CAR;
    enum Transport {
    	CAR(65),AIRPLANE(600),BOAT(22),TRAIN(70);	//注意最后分号

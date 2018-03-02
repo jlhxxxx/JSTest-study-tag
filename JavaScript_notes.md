@@ -123,9 +123,9 @@ document.write("糟糕！文档消失了。");
 
 当网页被加载时，浏览器会创建页面的文档对象模型（Document Object Model）。HTML DOM 模型被构造为对象的树。   
 
-<center>![](http://www.w3school.com.cn/i/ct_htmltree.gif)</center>
+![](http://www.w3school.com.cn/i/ct_htmltree.gif)
 
-<center>**HTML DOM 树**</center> 
+**HTML DOM 树**
 
 * 查找 HTML 元素
 

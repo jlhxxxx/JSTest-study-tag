@@ -419,7 +419,7 @@ print(pprint.pformat(someDictionaryValue))
 >>> shelfFile.close()
 ```
 
-## **import [shutil](https://docs.python.org/3/library/shutil.html#module-shutil) **  # *copy, move, rename, and delete files*
+## import [shutil](https://docs.python.org/3/library/shutil.html#module-shutil)  # *copy, move, rename, and delete files*
 
 * **shutil.copy(source, destination)** # copy a single file and the return value is the path of the newly copied file.
 

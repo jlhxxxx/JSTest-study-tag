@@ -799,4 +799,4 @@ document.write("糟糕！文档消失了。");
        ```javascript
        $("h01").writeAttribute("style","color:red").insert("Hello Prototype!");
        ```
-  ​     	
+  	

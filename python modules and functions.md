@@ -649,3 +649,171 @@ Once you have the `WebElement` object, you can find out more about it by reading
 * **browser.forward()** # Clicks the Forward button.
 * **browser.refresh()** # Clicks the Refresh/Reload button.
 * **browser.quit()** # Clicks the Close Window button.
+
+## import [openpyxl](http://openpyxl.readthedocs.io/en/stable/) # *read/write Excel 2010 xlsx/xlsm files*
+
+* **openpyxl.load_workbook()** # takes in the filename and returns a value of the `workbook` data type
+
+  ```python
+  >>> import openpyxl
+  >>> wb = openpyxl.load_workbook('example.xlsx')
+  >>> type(wb)
+  <class 'openpyxl.workbook.workbook.Workbook'>
+  ```
+
+* **get sheet**: wb[*sheetname*]  .title  .active
+
+  ```python
+  >>> wb.sheetnames
+  ['Sheet1', 'Sheet2', 'Sheet3']
+  >>> sheet = wb['Sheet3']
+  >>> sheet
+  <Worksheet "Sheet3">
+  >>> type(sheet) 
+  <class 'openpyxl.worksheet.worksheet.Worksheet'>
+  >>> sheet.title
+  'Sheet3'
+  >>> anotherSheet = wb.active
+  >>> anotherSheet
+  <Worksheet "Sheet1">
+  ```
+
+* **get cell**: sheet[*coordinate*] .row  .column  .coordinate .max_
+
+* **write and save**
+
+  ```python
+  >>> sheet = wb['Sheet1']
+  >>> sheet['A1']
+  <Cell Sheet1.A1>
+  >>> sheet['A1'].value
+  datetime.datetime(2015, 4, 5, 13, 34, 2)
+  >>> c = sheet['B1']
+  >>> 'Row ' + str(c.row) + ', Column ' + c.column + ' is ' + c.value
+  'Row 1, Column B is Apples'
+  >>> 'Cell ' + c.coordinate + ' is ' + c.value
+  'Cell B1 is Apples'
+  >>> sheet.cell(row=1, column=2).value
+  'Apples'
+  >>> sheet.max_row
+  7
+  >>> sheet.max_column
+  3
+  >>> sheet['B1'] = 'banana'
+  >>> sheet['B1']
+  'banana'
+  >>> wb.save('updateExample.xlsx')
+  ```
+
+* **openpyxl.cell.column_index_from_string()** # convert from letters to numbers
+
+* **openpyxl.cell.get_column_letter()** # convert from numbers to letters
+
+  ```python
+  >>> import openpyxl
+  >>> from openpyxl.cell import get_column_letter, column_index_from_string
+  >>> wb = openpyxl.load_workbook('example.xlsx')
+  >>> sheet = wb['Sheet1']
+  >>> get_column_letter(sheet.max_column)
+  'C'
+  >>> column_index_from_string('AA')
+  27
+  ```
+
+* Getting **Rows** and **Columns** from the Sheets(tuples)
+
+  ```python
+  >>> import openpyxl
+  >>> wb = openpyxl.load_workbook('example.xlsx')
+  >>> sheet = wb['Sheet1']
+  >>> sheet['A1':'B2']
+  ((<Cell Sheet1.A1>, <Cell Sheet1.B1>), (<Cell Sheet1.A2>,<Cell Sheet1.B2>))
+  >>> sheet.columns[1]
+  (<Cell Sheet1.B1>, <Cell Sheet1.B2>, <Cell Sheet1.B3>, <Cell Sheet1.B4>,
+  <Cell Sheet1.B5>, <Cell Sheet1.B6>, <Cell Sheet1.B7>)
+  >>> for rowOfCellObjects in sheet['A1':'B2']:
+          for cellObj in rowOfCellObjects:
+              print(cellObj.coordinate, cellObj.value)
+          
+  A1 2015-04-05 13:34:02
+  B1 Apples
+  A2 2015-04-05 03:41:23
+  B2 Cherries
+  ```
+
+* **Font** # Setting the Font Style of Cells
+
+  ```python
+  >>> import openpyxl
+  >>> from openpyxl.styles import Font
+  >>> wb = openpyxl.Workbook()
+  >>> sheet = wb.get_sheet_by_name('Sheet')
+  >>> italic24Font = Font(size=24, italic=True)
+  >>> sheet['A1'].font = italic24Font
+  >>> sheet['A1'] = 100
+  >>> sheet['A2'] = 200
+  >>> sheet['A3'] = 'SUM(A1:A2)'
+  >>> wb.save('styled.xlsx')
+  ```
+
+  | Keyword argument | Data type | Description                                               |
+  | ---------------- | --------- | --------------------------------------------------------- |
+  | `name`           | String    | The font name, such as `'Calibri'` or `'Times New Roman'` |
+  | `size`           | Integer   | The point size                                            |
+  | `bold`           | Boolean   | `True`, for bold font                                     |
+  | `italic`         | Boolean   | `True`, for italic font                                   |
+
+* Row **Height** and Column **Width**
+
+  ```python
+  >>> sheet.row_dimensions[1].height = 70
+  >>> sheet.column_dimensions['B'].width = 20
+  ```
+
+* **Merging and Unmerging Cells** # 合并单元格
+
+  ```python
+  >>> sheet.merge_cells('A1:D3')
+  >>> sheet['A1'] = 'Twelve cells merged together.'
+  >>> sheet.unmerge_cells('A1:D3')
+  ```
+
+* **Freeze Panes**
+
+  | `freeze_panes` setting                                     | Rows and columns frozen   |
+  | ---------------------------------------------------------- | ------------------------- |
+  | `sheet.freeze_panes = 'A2'`                                | Row 1                     |
+  | `sheet.freeze_panes = 'B1'`                                | Column A                  |
+  | `sheet.freeze_panes = 'C1'`                                | Columns A and B           |
+  | `sheet.freeze_panes = 'C2'`                                | Row 1 and columns A and B |
+  | `sheet.freeze_panes = 'A1'` or `sheet.freeze_panes = None` | No frozen panes           |
+
+* **charts**
+
+  To make a chart, you need to do the following:
+
+  1. Create a `Reference` object from a rectangular selection of cells.
+  2. Create a `Series` object by passing in the `Reference` object.
+  3. Create a `Chart` object.
+  4. Append the `Series` object to the `Chart` object.
+  5. Add the `Chart` object to the `Worksheet` object, optionally specifying which cell the top left corner of the chart should be positioned.
+
+  ```python
+  >>> import openpyxl
+  >>> wb = openpyxl.Workbook()
+  >>> sheet = wb.active
+  >>> for i in range(1, 11):         # create some data in column A
+          sheet['A' + str(i)] = i
+
+  >>> refObj = openpyxl.chart.Reference(sheet, min_col=1, min_row=1, max_col=1, max_row=10)
+
+  >>> seriesObj = openpyxl.chart.Series(refObj, title='First series')
+  >>> chartObj = openpyxl.chart.BarChart() # chart style
+  >>> chartObj.title = 'My Chart'
+  >>> chartObj.append(seriesObj)
+  >>> sheet.add_chart(chartObj, 'C5')
+  >>> wb.save('sampleChart.xlsx')
+  ```
+
+  **Unfortunately, in the current version of OpenPyXL (2.3.3), the `load_workbook()`function does not load charts in Excel files.**
+

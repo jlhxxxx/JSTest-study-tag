@@ -1,7 +1,7 @@
 #! python3
 # TexttoSpreadsheet.py - there have a bug that the cells can't store strings(only apply numbers)
 
-import openpyxl, sys, oscd
+import openpyxl, sys, os
 
 
 try:

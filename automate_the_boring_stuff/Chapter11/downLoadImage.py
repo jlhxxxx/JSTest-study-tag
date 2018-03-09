@@ -1,5 +1,5 @@
 #! python3
-# downloadImagePlus.py - from huaban.com
+# downloadImagePlus.py - from huaban.com/boards/favorite/beauty/
 import requests, bs4, os, sys, re
 
 # add board or pin list

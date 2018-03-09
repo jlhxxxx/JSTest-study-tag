@@ -533,11 +533,26 @@ print(pprint.pformat(someDictionaryValue))
   <class 'requests.models.Response'>
   >>> res.status_code == requests.codes.ok
   True
+  >>> res.headers['content-type']
+  'text/plain'
+  >>> res.encoding
+  'ISO-8859-1'
+  >>> res.apparent_encoding
+  'UTF-8-SIG'
   >>> len(res.text)
   178981
   >>> print(res.text[:250])
   ...
   ```
+  > 遇到`res.text`乱码可以使用如下类似方法解决：
+  >
+  > ```python
+  > res.text.encode('ISO-8859-1').decode('UTF-8')
+  > ```
+  >
+  > 参考：[python3的requests类抓取中文页面出现乱码](http://blog.csdn.net/gyy823/article/details/51678991)
+  >
+  > [[爬虫requests爬去网页乱码问题](http://www.cnblogs.com/laolv/p/7397429.html)]
 
 * **raise_for_status()** # This will raise an exception if there was an error downloading the file and will do nothing if the download succeeded. 
 
@@ -817,3 +832,243 @@ Once you have the `WebElement` object, you can find out more about it by reading
 
   **Unfortunately, in the current version of OpenPyXL (2.3.3), the `load_workbook()`function does not load charts in Excel files.**
 
+
+## import PyPDF2 #  *interact with PDFs  documents*
+
+* Extracting Text
+
+  ```python
+  >>> import PyPDF2
+  >>> pdfFileObj = open('meetingminutes.pdf', 'rb')
+  >>> pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+  >>> pdfReader.numPages
+  19
+  >>> pageObj = pdfReader.getPage(0)
+  >>> pageObj.extractText()
+  'OOFFFFIICCIIAALL BBOOAARRDD MMIINNUUTTEESS Meeting of March 7, 2015...
+  ```
+
+* **decrypt()** # *encrypted with the password*
+
+  ```python
+  >>> import PyPDF2
+  >>> pdfReader = PyPDF2.PdfFileReader(open('encrypted.pdf', 'rb'))
+  >>> pdfReader.isEncrypted
+  True
+  >>> pdfReader.getPage(0)
+  Traceback (most recent call last):
+  ...
+  >>> pdfReader.decrypt('rosebud')
+  1
+  >>> pageObj = pdfReader.getPage(0)
+  ```
+
+* **creating PDFs** 
+
+  ```python
+  >>> import PyPDF2
+  >>> pdf1File = open('meetingminutes.pdf', 'rb')
+  >>> pdf2File = open('meetingminutes2.pdf', 'rb')
+  >>> pdf1Reader = PyPDF2.PdfFileReader(pdf1File)
+  >>> pdf2Reader = PyPDF2.PdfFileReader(pdf2File)
+  >>> pdfWriter = PyPDF2.PdfFileWriter()
+
+  >>> for pageNum in range(pdf1Reader.numPages):
+          pageObj = pdf1Reader.getPage(pageNum)
+          pdfWriter.addPage(pageObj)
+
+  >>> for pageNum in range(pdf2Reader.numPages):
+          pageObj = pdf2Reader.getPage(pageNum)
+          pdfWriter.addPage(pageObj)
+
+  >>> pdfOutputFile = open('combinedminutes.pdf', 'wb')
+  >>> pdfWriter.write(pdfOutputFile)
+  >>> pdfOutputFile.close()
+  >>> pdf1File.close()
+  >>> pdf2File.close()
+  ```
+
+  > PyPDF2 cannot insert pages in the middle of a `PdfFileWriter` object; the `addPage()` method will only add pages to the end.
+
+* **rotateClockwise()** and **rotateCounterClockwise()** # *旋转*
+
+  ```python
+  >>> page = pdfReader.getPage(0)
+  >>> page.rotateClockwise(90)
+  ```
+
+* **mergePage()** # *overlay the contents of one page over another*
+
+  ```python
+  >>> minutesFile = open('meetingminutes.pdf', 'rb')
+  >>> pdfReader = PyPDF2.PdfFileReader(minutesFile)
+  >>> minutesFirstPage = pdfReader.getPage(0)
+  >>> pdfWatermarkReader = PyPDF2.PdfFileReader(open('watermark.pdf', 'rb'))
+  >>> minutesFirstPage.mergePage(pdfWatermarkReader.getPage(0))
+
+  >>> for pageNum in range(1, pdfReader.numPages):
+          pageObj = pdfReader.getPage(pageNum)
+          pdfWriter.addPage(pageObj)
+  >>> resultPdfFile = open('watermarkedCover.pdf', 'wb')
+  >>> pdfWriter.write(resultPdfFile)
+  >>> minutesFile.close()
+  >>> resultPdfFile.close()
+  ```
+
+* **encrypt()** # add encryption Before calling the `write()` method to save to a file
+
+  ```python
+  >>> pdfWriter.encrypt('swordfish')
+  ```
+
+## import docx(pip install python-docx)
+
+* Reading Word Documents # Document paragraphs runs .text
+
+  ```python
+  >>> import docx
+  >>> doc = docx.Document('demo.docx')
+  >>> len(doc.paragraphs)
+  7
+  >>> doc.paragraphs[0].text
+  'Document Title'
+  >>> doc.paragraphs[1].text
+  'A plain paragraph with some bold and some italic'
+  >>> len(doc.paragraphs[1].runs)
+  4
+  >>> doc.paragraphs[1].runs[3].text
+  'italic'
+  ```
+
+* **style**
+
+  When using a linked style for a `Run` object, you will need to add `'Char'` to the end of its name. For example, to set the Quote linked style for a `Paragraph` object, you would use `paragraphObj.style = 'Quote'`, but for a `Run` object, you would use `runObj.style = 'QuoteChar'`.
+
+  Runs can be further styled using `text` attributes. Each attribute can be set to one of three values: `True` (the attribute is always enabled, no matter what other styles are applied to the run), `False` (the attribute is always disabled), or `None` (defaults to whatever the run’s style is set to).
+
+  | Attribute       | Description                                                  |
+  | --------------- | ------------------------------------------------------------ |
+  | `bold`          | The text appears in bold.                                    |
+  | `italic`        | The text appears in italic.                                  |
+  | `underline`     | The text is underlined.                                      |
+  | `strike`        | The text appears with strikethrough.                         |
+  | `double_strike` | The text appears with double strikethrough.                  |
+  | `all_caps`      | The text appears in capital letters.                         |
+  | `small_caps`    | The text appears in capital letters, with lowercase letters two points smaller. |
+  | `shadow`        | The text appears with a shadow.                              |
+  | `outline`       | The text appears outlined rather than solid.                 |
+  | `rtl`           | The text is written right-to-left.                           |
+  | `imprint`       | The text appears pressed into the page.                      |
+  | emboss          | The text appears raised off the page in relief.              |
+
+  ```python
+  >>> doc = docx.Document('demo.docx')
+  >>> doc.paragraphs[0].style
+  'Title'
+  >>> doc.paragraphs[0].style = 'Normal'
+  >>> doc.paragraphs[1].runs[0].style = 'QuoteChar'
+  >>> doc.paragraphs[1].runs[1].underline = True
+  >>> doc.save('restyled.docx')
+  ```
+
+  **Writing Word Documents**
+
+* **add_paragraph()** and **add_run()** # Both `add_paragraph()` and `add_run()` accept an optional second argument that is a string of the `Paragraph` or `Run` object’s style.
+
+  ```python
+  >>> import docx
+  >>> doc = docx.Document()
+  >>> doc.add_paragraph('Hello world!', 'Title')
+  <docx.text.Paragraph object at 0x000000000366AD30>
+  >>> paraObj1 = doc.add_paragraph('This is a second paragraph.')
+  >>> paraObj2 = doc.add_paragraph('This is a yet another paragraph.')
+  >>> paraObj1.add_run(' This text is being added to the second paragraph.')
+  <docx.text.Run object at 0x0000000003A2C860>
+  >>> doc.save('multipleParagraphs.docx')
+  ```
+
+* **add_heading()** # The arguments to `add_heading()` are a string of the heading text and an integer from `0` to `4` for various heading levels.
+
+  ```python
+  >>> doc = docx.Document()
+  >>> doc.add_heading('Header 0', 0)
+  <docx.text.Paragraph object at 0x00000000036CB3C8>
+  >>> doc.add_heading('Header 4', 4)
+  <docx.text.Paragraph object at 0x00000000036CB3C8>
+  ```
+
+* **add_break()** # add a line break. If you want to add a page break instead, you need to pass the value `docx.text.WD_BREAK.PAGE`.
+
+  ```python
+  >>> doc.paragraphs[0].add_break(docx.enum.text.WD_BREAK.PAGE)
+  >>> doc.add_paragraph('This is on the second page!')
+  ```
+
+* **add_picture()**
+
+  ```python
+  >>> doc.add_picture('zophie.png', width=docx.shared.Inches(1),
+  height=docx.shared.Cm(4))
+  ```
+
+## import csv
+
+* **csv.reader()**
+
+  ```python
+  >>> import csv
+  >>> exampleFile = open('example.csv')
+  >>> exampleReader = csv.reader(exampleFile)
+  >>> list(exampleReader)
+  [['4/5/2015 13:34', 'Apples', '73'], ['4/5/2015 3:41', 'Cherries', '85']...
+  >>> for row in exampleReader:
+          print('Row #' + str(exampleReader.line_num) + ' ' + str(row))
+
+  Row #1 ['4/5/2015 13:34', 'Apples', '73']
+  ```
+
+* **csv.writer()**
+
+  ```python
+  >>> import csv
+  >>> outputFile = open('output.csv', 'w', newline='')
+  >>> outputWriter = csv.writer(outputFile)
+  >>> outputWriter.writerow(['spam', 'eggs', 'bacon', 'ham'])
+  21
+  >>> outputWriter.writerow(['Hello, world!', 'eggs', 'bacon', 'ham'])
+  32
+  >>> outputWriter.writerow([1, 2, 3.141592, 4])
+  16
+  >>> outputFile.close()
+  ```
+
+  > If you forget the `newline=''` keyword argument in `open()`, the CSV file will be double-spaced（空一行）.
+
+  **delimiter** and **lineterminator** Keyword Arguments:  The *delimiter* is the character that appears between cells on a row. By default, the delimiter for a CSV file is a comma. The *line terminator* is the character that comes at the end of a row. By default, the line terminator is a newline.
+
+  ```python
+  >>> csvWriter = csv.writer(csvFile, delimiter='\t', lineterminator='\n\n')
+  ```
+
+
+## import json
+
+* **json.loads()** # translate a string containing JSON data into a Python value
+
+  ```python
+  >>> stringOfJsonData = '{"name": "Zophie", "isCat": true, "miceCaught": 0, "felineIQ": null}'
+  >>> import json
+  >>> jsonDataAsPythonValue = json.loads(stringOfJsonData)
+  >>> jsonDataAsPythonValue
+  {'isCat': True, 'miceCaught': 0, 'name': 'Zophie', 'felineIQ': None}
+  ```
+
+* **json.dumps()**  # translate a Python value into a string of JSON-formatted data
+
+  ```python
+  >>> pythonValue = {'isCat': True, 'miceCaught': 0, 'name': 'Zophie', 'felineIQ': None}
+  >>> import json
+  >>> stringOfJsonData = json.dumps(pythonValue)
+  >>> stringOfJsonData
+  '{"isCat": true, "felineIQ": null, "miceCaught": 0, "name": "Zophie" }'
+  ```

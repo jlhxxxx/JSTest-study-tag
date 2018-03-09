@@ -16,6 +16,15 @@
   cats,dogs,mice
   ```
 
+* **round()** 
+
+  ```python
+  >>> round(1425064108.017826, 2)
+  1425064108.02
+  >>> round(now)
+  1425064108
+  ```
+
 ### **List methods**
 
 ```python
@@ -1072,3 +1081,129 @@ Once you have the `WebElement` object, you can find out more about it by reading
   >>> stringOfJsonData
   '{"isCat": true, "felineIQ": null, "miceCaught": 0, "name": "Zophie" }'
   ```
+
+## import time 
+
+* **time.time()** # returns the number of seconds since 19700101 12AM as a float value.
+
+  ```python
+  >>> time.time()
+  1425063955.068649
+  ```
+
+* **time.sleep()** 
+
+  > that pressing CTRL-C will not interrupt `time.sleep()` calls in IDLE. IDLE waits until the entire pause is over before raising the `KeyboardInterrupt` exception.
+
+## import datatime
+
+* **datetime.datetime() ** # returns a `datetime` object of the moment specified by the arguments
+
+* **datetime.datetime.now()** 
+
+  ```python
+  >>> import datetime
+  >>> datetime.datetime.now()
+  datetime.datetime(2015, 2, 27, 11, 10, 49, 55, 53)
+  >>> dt = datetime.datetime(2015, 10, 21, 16, 29, 0)
+  >>> dt.year, dt.month, dt.day
+  (2015, 10, 21)
+  >>> dt.hour, dt.minute, dt.second
+  (16, 29, 0)
+  ```
+
+
+* **datetime.datetime.fromtimestamp()** # convert a Unix epoch timestamp to a `datetime` object
+
+  ```python
+  >>> datetime.datetime.fromtimestamp(time.time())
+  datetime.datetime(2018, 1, 1, 14, 32, 0, 604980)
+
+  # Pausing Until a Specific Date
+  >>> while datetime.datetime.now() < halloween2016:
+          time.sleep(1)
+  ```
+
+* **datetime.timedelta()** #  represents a *duration* of time. It takes keyword arguments `weeks`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`, and `microseconds`, no `month` or `year`.
+
+  ```python
+  >>> delta = datetime.timedelta(days=11, hours=10, minutes=9, seconds=8)
+  >>> delta.days, delta.seconds, delta.microseconds
+  (11, 36548, 0)
+  >>> delta.total_seconds()
+  986948.0
+  >>> str(delta)
+  '11 days, 10:09:08'
+
+  >>> datetime.datetime.now() + delta
+  datetime.datetime(2018, 3, 20, 18, 38, 50, 636181)
+  ```
+
+* **strftime()**
+
+  | strftime directive | Meaning                                               |
+  | ------------------ | ----------------------------------------------------- |
+  | `%Y`               | Year with century, as in `'2014'`                     |
+  | `%y`               | Year without century, `'00'` to `'99'` (1970 to 2069) |
+  | `%m`               | Month as a decimal number, `'01'` to `'12'`           |
+  | `%B`               | Full month name, as in `'November'`                   |
+  | `%b`               | Abbreviated month name, as in `'Nov'`                 |
+  | `%d`               | Day of the month, `'01'` to `'31'`                    |
+  | `%j`               | Day of the year, `'001'` to `'366'`                   |
+  | `%w`               | Day of the week, `'0'` (Sunday) to `'6'` (Saturday)   |
+  | `%A`               | Full weekday name, as in `'Monday'`                   |
+  | `%a`               | Abbreviated weekday name, as in `'Mon'`               |
+  | `%H`               | Hour (24-hour clock), `'00'` to `'23'`                |
+  | `%I`               | Hour (12-hour clock), `'01'` to `'12'`                |
+  | `%M`               | Minute, `'00'` to `'59'`                              |
+  | `%S`               | Second, `'00'` to `'59'`                              |
+  | `%p`               | `'AM'` or `'PM'`                                      |
+  | `%%`               | Literal `'%'` character                               |
+
+  ```python
+  >>> oct21st = datetime.datetime(2015, 10, 21, 16, 29, 0)
+  >>> oct21st.strftime('%Y/%m/%d %H:%M:%S')
+  '2015/10/21 16:29:00'
+  >>> oct21st.strftime('%I:%M %p')
+  '04:29 PM'
+  >>> oct21st.strftime("%B of '%y")
+  "October of '15"
+  ```
+
+* **datetime.datetime.strptime()** # convert a string of date information to a `datetime` object.
+
+  ```python
+  >>> datetime.datetime.strptime('October 21, 2015', '%B %d, %Y')
+  datetime.datetime(2015, 10, 21, 0, 0)
+  >>> datetime.datetime.strptime('2015/10/21 16:29:00', '%Y/%m/%d %H:%M:%S')
+  datetime.datetime(2015, 10, 21, 16, 29)
+  ```
+
+## import threading 
+
+* **threading.Thread()**  # To create a `Thread`object
+
+  ```python
+  import threading, time
+  print('Start of program.')
+
+  def takeANap():
+      time.sleep(5)
+      print('Wake up!')
+
+  threadObj = threading.Thread(target=takeANap)
+  threadObj.start()
+
+  print('End of program.')
+  ```
+
+  If the target function you want to run in the new thread takes arguments, you can pass the target function’s arguments to `threading.Thread()`. The regular arguments can be passed as a list to the `args` keyword argument. The keyword argument can be specified as a dictionary to the `kwargs` keyword argument.
+
+  ```python
+  >>> import threading
+  >>> threadObj = threading.Thread(target=print, args=['Cats', 'Dogs', 'Frogs'],
+  kwargs={'sep': ' & '})
+  >>> threadObj.start()
+  Cats & Dogs & Frogs
+  ```
+

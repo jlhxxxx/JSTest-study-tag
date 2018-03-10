@@ -1,5 +1,0 @@
-apple,12,3
-banana,14,5
-orange,17,6
-tiger,1,10000
-sheep,20,250

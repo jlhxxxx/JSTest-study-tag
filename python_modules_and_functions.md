@@ -1207,3 +1207,170 @@ Once you have the `WebElement` object, you can find out more about it by reading
   Cats & Dogs & Frogs
   ```
 
+* **join()** # Say there’s some code you don’t want to run in the main thread until all the threads have completed. Calling a `Thread` object’s `join()` method will block until that thread has finished. 
+
+  ```python
+  for downloadThread in downloadThreads:
+      downloadThread.join()
+  print('Done.')
+  ```
+
+## import subprocess
+
+* **subprocess.Popen()** 
+
+  ```python
+  >>> import subprocess
+  >>> subprocess.Popen('calc.exe')
+  <subprocess.Popen object at 0x0000000003055A58>
+  ```
+  You can pass command line arguments to processes you create with `Popen()`. To do so, you pass a list as the sole argument to `Popen()`.
+
+  ```python
+  >>> subprocess.Popen(['C:\\Windows\\notepad.exe', 'C:\\hello.txt'])
+  <subprocess.Popen object at 0x00000000032DCEB8>
+  ```
+
+  Each operating system has a program that performs the equivalent of double-clicking a document file to open it. On Windows, this is the `start` program. On OS X, this is the `open` program. On Ubuntu Linux, this is the `see` program.
+
+  ```python
+  >>> subprocess.Popen(['start', 'hello.txt'], shell=True)
+  ```
+
+*  **poll()** # the `poll()` method as asking your friend if she’s finished running the code you gave her. It will return `None` if the process is still running at the time `poll()` is called. If the program has terminated, it will return the process’s integer *exit code*.
+
+* **wait()** # The `wait()` method is like waiting for your friend to finish working on her code before you keep working on yours. The `wait()` method will block until the launched process has terminated.
+
+  ```python
+  >>> calcProc = subprocess.Popen('c:\\Windows\\System32\\calc.exe')
+  >>> calcProc.poll() == None
+  True
+  >>> calcProc.wait()
+  0	# after close the calc
+  >>> calcProc.poll()
+  0
+  ```
+
+
+## import smtplib # *send email*
+
+* **smptlib.SMTP()** # connect 
+
+  ```python
+  >>> import smtplib
+  >>> smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
+  >>> type(smtpObj)
+  <class 'smtplib.SMTP'>
+  ```
+
+  If the `smptlib.SMTP()` call is not successful, your SMTP server might not support TLS on port 587. In this case, you will need to create an `SMTP` object using `smtplib.SMTP_SSL()` and port 465 instead.
+
+  ```python
+  >>> smtpObj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+  ```
+
+* **ehlo()** # “say hello” to the SMTP email server. Just be sure to call the `ehlo()` method first thing after getting the `SMTP` object or else the later method calls will result in errors. （必要的握手）
+
+  ```python
+  >>> smtpObj.ehlo()
+  (250, b'mx.google.com at your service, [216.172.148.131]\nSIZE 35882577\
+  n8BITMIME\nSTARTTLS\nENHANCEDSTATUSCODES\nCHUNKING')
+  ```
+
+* **starttls()** # If you are connecting to port 587 on the SMTP server (that is, you’re using TLS encryption), you’ll need to call the `starttls()` method next. This required step enables encryption for your connection. If you are connecting to port 465 (using SSL), then encryption is already set up, and you should skip this step.
+
+  ```python
+  >>> smtpObj.starttls()
+  (220, b'2.0.0 Ready to start TLS')
+  ```
+
+  `starttls()` puts your SMTP connection in TLS mode. The `220` in the return value tells you that the server is ready.
+
+* **login()**
+
+  ```python
+  >>> smtpObj.login(' my_email_address@gmail.com ', ' MY_SECRET_PASSWORD ')
+  (235, b'2.7.0 Accepted')
+  ```
+
+* **sendmail()**
+
+  ```python
+  >>> smtpObj.sendmail(' my_email_address@gmail.com ', ' recipient@example.com ','Subject: title\nDear Alice,...')
+  {}
+  ```
+
+* **quit()**
+
+  ```python
+  >>> smtpObj.quit()
+  (221, b'2.0.0 closing connection ko10sm23097611pbd.52 - gsmtp')
+  ```
+
+## import [imapclient](http://imapclient.readthedocs.io/en/master/), [pyzmail](http://www.magiksys.net/pyzmail/) (*use `easy_install pyzmail`*) # receive
+
+```python
+>>> import imapclient
+>>> imapObj = imapclient.IMAPClient('imap.gmail.com', ssl=True)
+>>> imapObj.login(' my_email_address@gmail.com ', ' MY_SECRET_PASSWORD ')
+'my_email_address@gmail.com Jane Doe authenticated (Success)'
+# you can use imapObj.list_folders() ...
+>>> imapObj.select_folder('INBOX', readonly=True)
+>>> UIDs = imapObj.search(['SINCE 05-Jul-2014'])
+>>> UIDs
+[40032, 40033, 40034, 40035, 40036, 40037, 40038, 40039, 40040, 40041]
+>>> rawMessages = imapObj.fetch([40041], ['BODY[]', 'FLAGS'])
+>>> import pyzmail
+>>> message = pyzmail.PyzMessage.factory(rawMessages[40041]['BODY[]'])
+>>> message.get_subject()
+'Hello!'
+>>> message.get_addresses('from')
+[('Edward Snowden', 'esnowden@nsa.gov')]
+>>> message.get_addresses('to')
+[(Jane Doe', 'jdoe@example.com')]
+>>> message.get_addresses('cc')
+[]
+>>> message.get_addresses('bcc')
+[]
+>>> message.text_part != None
+True
+>>> message.text_part.get_payload().decode(message.text_part.charset)
+'So long, and thanks for all the fish!\r\n\r\n-Al\r\n'
+>>> message.html_part != None
+True
+>>> message.html_part.get_payload().decode(message.html_part.charset)
+'<div dir="ltr"><div>So long, and thanks for all the fish!<br><br></div>-Al<br></div>\r\n'
+>>> imapObj.logout()
+```
+
+* **search()** # The `search()` method doesn’t return the emails themselves but rather unique IDs (UIDs) for the emails, as integer values. You can then pass these UIDs to the `fetch()` method to obtain the email content.
+
+  | Search key                                                   | Meaning                                                      |
+  | ------------------------------------------------------------ | ------------------------------------------------------------ |
+  | `'ALL'`                                                      | Returns all messages in the folder. You may run in to `imaplib` size limits if you request all the messages in a large folder. See [Size Limits](https://automatetheboringstuff.com/chapter16/#calibre_link-50). |
+  | `'BEFORE`*date'*, `'ON`*date'*, `'SINCE` *date'*             | These three search keys return, respectively, messages that were received by the IMAP server before, on, or after the given *date*. The date must be formatted like `05-Jul-2015`. Also, while `'SINCE 05-Jul-2015'` will match messages on and after July 5, `'BEFORE 05-Jul-2015'` will match only messages before July 5 but not on July 5 itself. |
+  | `'SUBJECT`*string'*, `'BODY`*string'*, `'TEXT`*string'*      | Returns messages where *string* is found in the subject, body, or either, respectively. If *string* has spaces in it, then enclose it with double quotes: `'TEXT "search with spaces"'`. |
+  | `'FROM`*string'*, `'TO`*string'*, `'CC`*string'*, `'BCC` *string'* | Returns all messages where *string* is found in the “from” emailaddress, “to” addresses, “cc” (carbon copy) addresses, or “bcc” (blind carbon copy) addresses, respectively. If there are multiple email addresses in *string*, then separate them with spaces and enclose them all with double quotes: `'CC` *"firstcc@example.com secondcc@example.com"'*. |
+  | `'SEEN'`, `'UNSEEN'`                                         | Returns all messages with and without the *\Seen* flag, respectively. An email obtains the *\Seen* flag if it has been accessed with a `fetch()`method call (described later) or if it is clicked when you’re checking your email in an email program or web browser. It’s more common to say the email has been “read” rather than “seen,” but they mean the same thing. |
+  | `'ANSWERED'`, `'UNANSWERED'`                                 | Returns all messages with and without the *\Answered* flag, respectively. A message obtains the *\Answered* flag when it is replied to. |
+  | `'DELETED'`, `'UNDELETED'`                                   | Returns all messages with and without the *\Deleted* flag, respectively. Email messages deleted with the `delete_messages()` method are given the *\Deleted* flag but are not permanently deleted until the `expunge()`method is called (see [Deleting Emails](https://automatetheboringstuff.com/chapter16/#calibre_link-51)). Note that some email providers, such as Gmail, automatically expunge emails. |
+  | `'DRAFT'`, `'UNDRAFT'`                                       | Returns all messages with and without the *\Draft* flag, respectively. Draft messages are usually kept in a separate `Drafts` folder rather than in the `INBOX` folder. |
+  | `'FLAGGED'`, `'UNFLAGGED'`                                   | Returns all messages with and without the *\Flagged* flag, respectively. This flag is usually used to mark email messages as “Important” or “Urgent.” |
+  | `'LARGER` *N'*, `'SMALLER` *N'*                              | Returns all messages larger or smaller than *N* bytes, respectively. |
+  | `'NOT` *search-key'*                                         | Returns the messages that *search-key* would *not* have returned. |
+  | `'OR` *search-key1 search-key2'*                             | Returns the messages that match *either* the first or second *search-key*. |
+
+  * **imapObj.search(['SINCE 01-Jan-2015', 'NOT FROM alice@example.com'])**. Returns every message sent from everyone except *alice@example.com* since the start of 2015.
+  * **imapObj.search(['OR FROM alice@example.com FROM bob@example.com'])**. Returns every message ever sent from *alice@example.com* or *bob@example.com*.
+
+* **delete_messages()**
+
+  ```python
+  >>> UIDs = imapObj.search(['ON 09-Jul-2015'])
+  >>> UIDs
+  [40066]
+  >>> imapObj.delete_messages(UIDs)
+  {40066: ('\\Seen', '\\Deleted')}
+  >>> imapObj.expunge()
+  ('Success', [(5452, 'EXISTS')])
+  ```

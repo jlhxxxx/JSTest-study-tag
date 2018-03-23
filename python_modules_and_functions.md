@@ -1,5 +1,3 @@
-
-
 # Python 常用模块及函数
 
 ## [Built-in Functions](https://docs.python.org/3/library/functions.html)
@@ -9,9 +7,7 @@
   ```python
   print('Hello', end='')
   print('World')
-
   HelloWorld
-
   >>> print('cats', 'dogs', 'mice', sep=',')
   cats,dogs,mice
   ```
@@ -425,6 +421,9 @@ print(pprint.pformat(someDictionaryValue))
 [['Zophie', 'Pooka', 'Simon']]
 >>> shelfFile['cats']
 ['Zophie', 'Pooka', 'Simon']
+>>> del shelfFile['cats']
+>>> list(shelfFile.keys())
+[]
 >>> shelfFile.close()
 ```
 
@@ -1374,3 +1373,284 @@ True
   >>> imapObj.expunge()
   ('Success', [(5452, 'EXISTS')])
   ```
+
+## import [pillow](http://pillow.readthedocs.io/en/latest/) # *Python Imaging Library* 
+
+* **ImageColor.getcolor()** # This function takes a color name string as its first argument, and the string `'RGBA'` as its second argument, and it returns an RGBA tuple.
+
+  ```python
+  >>> from PIL import ImageColor
+  >>> ImageColor.getcolor('RED', 'RGBA')
+  (255, 0, 0, 255)
+  ```
+
+* Working with the Image Data Type # `from PIL import Image`
+
+  ```python
+  >>> from PIL import Image
+  >>> catIm = Image.open('zophie.png')
+  >>> catIm.size
+  (816, 1088)
+  >>> width, height = catIm.size
+  >>> width
+  816
+  >>> catIm.filename
+  'zophie.png'
+  >>> catIm.format
+  'PNG'
+  >>> catIm.format_description
+  'Portable network graphics'
+  >>> catIm.save('zophie.jpg')
+  ```
+
+* **Image.new()** #The arguments to `Image.new()` are as follows:
+
+  * The string `'RGBA'`, which sets the color mode to RGBA. (There are other modes that this book doesn’t go into.)
+  * The size, as a two-integer tuple of the new image’s width and height.
+  * The background color that the image should start with, as a four-integer tuple of an RGBA value. 
+
+  ```python
+  >>> im = Image.new('RGBA', (100, 200), 'purple')
+  ```
+
+* **crop()** # this method on `Image` objects takes a box tuple and returns an `Image` object representing the cropped image.
+
+  ```python
+  >>> faceIm = catIm.crop((335, 345, 565, 560))
+  >>> faceIm.size
+  (230, 215)
+  >>> faceIm.save('cropped.png')
+  ```
+
+* **copy()** and **paste()**
+
+  ```python
+  >>> catIm = Image.open('zophie.png')
+  >>> catCopyIm = catIm.copy()
+  >>> catCopyIm.paste(faceIm, (0, 0))
+  >>> catCopyIm.paste(faceIm, (400, 500))
+  >>> catCopyIm.save('pasted.png')
+  ```
+
+* **resize()** #  This method is called on an `Image` object and returns a new `Image` object of the specified width and height.
+
+  ```python
+  >>> width, height = catIm.size
+  >>> quartersizedIm = catIm.resize((int(width / 2), int(height / 2)))
+  ```
+
+* **rotate()** # which returns a new `Image` object of the rotated image and leaves the original `Image` object unchanged.
+
+  ```python
+  >>> catIm.rotate(90).save('rotated90.png')
+  ```
+
+  The `rotate()` method has an optional `expand` keyword argument that can be set to `True` to enlarge the dimensions of the image to fit the entire rotated new image. 
+
+  ```python
+  >>> catIm.rotate(6, expand=True)
+  ```
+
+* **transpose()** # You can also get a “mirror flip” of an image with the `transpose()` method. You must pass either `Image.FLIP_LEFT_RIGHT` or `Image.FLIP_TOP_BOTTOM` to the `transpose()` method. 
+
+  ```python
+  >>> catIm.transpose(Image.FLIP_LEFT_RIGHT)
+  >>> catIm.transpose(Image.FLIP_TOP_BOTTOM)
+  ```
+
+* **getpixel()** and **putpixel()** # 像素 These methods both take a tuple representing the x- and y-coordinates of the pixel. The `putpixel()` method also takes an additional tuple argument for the color of the pixel. This color argument is a four-integer RGBA tuple or a three-integer RGB tuple.
+
+  ```python
+  >>> im = Image.new('RGBA', (100, 100))
+  >>> im.getpixel((0, 0))
+  (0, 0, 0, 0)
+  >>> for x in range(100):
+          for y in range(50):
+              im.putpixel((x, y), (210, 210, 210))
+  >>> from PIL import ImageColor
+  >>> for x in range(100):
+          for y in range(50, 100):
+              im.putpixel((x, y), ImageColor.getcolor('darkgray', 'RGBA'))
+  ```
+
+* Drawing on Images # `from PIL import ImageDraw`
+
+  ```python
+  >>> from PIL import Image, ImageDraw
+  >>> im = Image.new('RGBA', (200, 200), 'white')
+  >>> draw = ImageDraw.Draw(im)
+  ```
+
+  * The `point(xy, fill)` method draws individual pixels. The *xy* argument represents a list of the points you want to draw. The list can be a list of x- and y-coordinate tuples, such as `[(x, y), (x, y), ...]`, or a list of x- and y-coordinates without tuples, such as `[x1, y1, x2, y2, ...]`.The *fill* argument is the color of the points and is either an RGBA tuple or a string of a color name, such as `'red'`. The *fill* argument is optional.
+  * The `line(xy, fill, width)` method draws a line or series of lines. *xy* is either a list of tuples, such as `[(x, y), (x, y), ...]`, or a list of integers, such as `[x1, y1, x2, y2, ...]`. Each point is one of the connecting points on the lines you’re drawing.
+  * The `rectangle(xy, fill, outline)` method draws a rectangle.（方形）. The *xy* argument is a box tuple of the form `(left, top, right, bottom)`.
+  * The `ellipse(xy, fill, outline)` method draws an ellipse（椭圆）. The *xy* argument is a box tuple (*left*, *top*, *right*, *bottom*) that represents a box that precisely contains the ellipse.
+  * The `polygon(xy, fill, outline)` method draws an arbitrary polygon. The *xy* argument is a list of tuples, such as `[(x, y), (x, y), ...]`, or integers, such as `[x1, y1, x2, y2, ...]`, representing the connecting points of the polygon’s sides. The last pair of coordinates will be automatically connected to the first pair. 
+
+  ```python
+  >>> draw.line([(0, 0), (199, 0), (199, 199), (0, 199), (0, 0)], fill='black')
+  >>> draw.rectangle((20, 30, 60, 60), fill='blue')
+  ```
+
+* Drawing Text # `from PIL import ImageFont`
+
+  * The`text()` method for drawing text onto an image. It takes four arguments: *xy*, *text*, *fill*, and *font*.
+  * The`textsize()` method. Its first argument is the string of text you want to measure, and its second argument is an optional `ImageFont` object. This method will then return a two-integer tuple of the width and height that the text in the given font would be if it were written onto the image.
+  * `ImageFont.truetype()` The first argument is a string for the font’s *TrueType file*—this is the actual font file that lives on your hard drive.The second argument to `ImageFont.truetype()` is an integer for the font size in *points*(rather than, say, pixels). Keep in mind that Pillow creates PNG images that are 72 pixels per inch by default, and a point is 1/72 of an inch.
+
+  ```python
+  >>> from PIL import Image, ImageDraw, ImageFont
+  >>> import os
+  >>> im = Image.new('RGBA', (200, 200), 'white')
+  >>> draw = ImageDraw.Draw(im)
+  >>> draw.text((20, 150), 'Hello', fill='purple')
+  >>> fontsFolder = 'FONT_FOLDER' # e.g. 'Library/Fonts'
+  >>> arialFont = ImageFont.truetype(os.path.join(fontsFolder, 'arial.ttf'), 32)
+  >>> draw.text((100, 150), 'Howdy', fill='gray', font=arialFont)
+  >>> im.save('text.png')
+  ```
+
+
+## import [pyautogui](http://pyautogui.readthedocs.org/)
+
+* Pauses and Fail-Safes
+
+  * **pyautogui.PAUSE** # set the `pyautogui.PAUSE` variable to the number of seconds you want it to pause. every PyAutoGUI function call will wait the seconds after performing its action. 
+  * Moving the mouse cursor to the upper-left corner of the screen will cause PyAutoGUI to raise the `pyautogui.FailSafeException`exception. You can disable this feature by setting `pyautogui.FAILSAFE = False`.
+
+  ```python
+  >>> import pyautogui
+  >>> pyautogui.PAUSE = 1
+  >>> pyautogui.FAILSAFE = True
+  ```
+
+* **pyautogui.size()** # The `pyautogui.size()` function returns a two-integer tuple of the screen’s width and height in pixels.
+
+  ```python
+  >>> import pyautogui
+  >>> pyautogui.size()
+  (1920, 1080)
+  >>> width, height = pyautogui.size()
+  ```
+
+* **pyautogui.moveTo()** # An optional `duration` integer or float keyword argument specifies the number of seconds it should take to move the mouse to the destination. 
+
+  ```python
+  >>> for i in range(10):
+          pyautogui.moveTo(100, 100, duration=0.25)
+  ```
+
+* **pyautogui.moveRel()** # moves the mouse cursor *relative* to its current position.
+
+  ```python
+  pyautogui.moveRel(100, 0, duration=0.25)
+  ```
+
+* **pyautogui.position()** # get the mouse’s current position
+
+  ```python
+  >>> pyautogui.position()
+  (311, 622)
+  ```
+
+* **pyautogui.click()** 
+
+  ```
+  >>> import pyautogui
+  >>> pyautogui.click()
+  pyautogui.click(200, 250, button='middle')
+  ```
+
+  * **pyautogui.mouseDown()** and **pyautogui.mouseUp()**
+  * **pyautogui.doubleClick()** and **pyautogui.rightClick()** and **pyautogui.middleClick()**
+
+* **pyautogui.dragTo()** and **pyautogui.dragRel()** like move
+
+* **pyautogui.scoll()**
+
+  ```python
+  >>> import time, pyautogui
+  >>> time.sleep(5); pyautogui.scroll(100)
+  ```
+
+* **pyautogui.screenshot()** # return a `Image` object
+
+* **pyautogui.pixelMatchesColor()** # This function will return `True` if the pixel at the given x- and y-coordinates on the screen matches the given color.
+
+  ```python
+  >>> import pyautogui
+  >>> im = pyautogui.screenshot()
+  >>> im.getpixel((50, 200))
+  (130, 135, 144)
+  >>> pyautogui.pixelMatchesColor(50, 200, (130, 135, 144))
+  True
+  ```
+
+* **pyautogui.locateOnScreen()** #  Give PyAutoGUI an image of what you want to click and let it figure out the coordinates. 图像识别 
+
+  ```python
+  >>> import pyautogui
+  >>> pyautogui.locateOnScreen('submit.png')
+  (643, 745, 70, 29)
+  ```
+
+  The four-integer tuple that `locateOnScreen()` returns has the x-coordinate of the left edge, the y-coordinate of the top edge, the width, and the height for the first place on the screen the image was found. 
+
+  If the image cannot be found on the screen, `locateOnScreen()` will return `None`. If the image can be found in several places on the screen, `locateAllOnScreen()` will return a `Generator` object.
+
+  ```python
+  >>> list(pyautogui.locateAllOnScreen('submit.png'))
+  [(643, 745, 70, 29), (1007, 801, 70, 29)]
+  ```
+
+* **pyautogui.center()** #  return x- and y-coordinates of the area’s center. 
+
+  ```python
+  >>> pyautogui.center((643, 745, 70, 29))
+  (678, 759)
+  ```
+
+* **pyautogui.typewrite()**
+
+  ```python
+  >>> pyautogui.click(100, 100); pyautogui.typewrite('Hello world!', 0.25)
+  ```
+
+  | Keyboard key string                                          | Meaning                                                      |
+  | ------------------------------------------------------------ | ------------------------------------------------------------ |
+  | `'a'`, `'b'`, `'c'`, `'A'`, `'B'`, `'C'`, `'1'`, `'2'`, `'3'`, `'!'`, `'@'`, `'#'`, and so on | The keys for single characters                               |
+  | `'enter'` (or `'return'`or `'\n'`)                           | The ENTER key                                                |
+  | `'esc'`                                                      | The ESC key                                                  |
+  | `'shiftleft'`, `'shiftright'`                                | The left and right SHIFT keys                                |
+  | `'altleft'`, `'altright'`                                    | The left and right ALT keys                                  |
+  | `'ctrlleft'`, `'ctrlright'`                                  | The left and right CTRL keys                                 |
+  | `'tab'` (or `'\t'`)                                          | The TAB key                                                  |
+  | `'backspace'`, `'delete'`                                    | The BACKSPACE and DELETE keys                                |
+  | `'pageup'`, `'pagedown'`                                     | The PAGE UP and PAGE DOWN keys                               |
+  | `'home'`, `'end'`                                            | The HOME and END keys                                        |
+  | `'up'`, `'down'`, `'left'`, `'right'`                        | The up, down, left, and right arrow keys                     |
+  | `'f1'`, `'f2'`, `'f3'`, and so on                            | The F1 to F12 keys                                           |
+  | `'volumemute'`, `'volumedown'`, `'volumeup'`                 | The mute, volume down, and volume up keys (some keyboards do not have these keys, but your operating system will still be able to understand these simulated keypresses) |
+  | `'pause'`                                                    | The PAUSE key                                                |
+  | `'capslock'`, `'numlock'`, `'scrolllock'`                    | The CAPS LOCK, NUM LOCK, and SCROLL LOCK keys                |
+  | `'insert'`                                                   | The INS or INSERT key                                        |
+  | `'printscreen'`                                              | The PRTSC or PRINT SCREEN key                                |
+  | `'winleft'`, `'winright'`                                    | The left and right WIN keys (on Windows)                     |
+  | `'command'`                                                  | The Command (![img](https://automatetheboringstuff.com/images/000085.jpg)) key (on OS X) `'option'` The OPTION key (on OS X) |
+
+  ```python
+  >>> pyautogui.typewrite(['a', 'b', 'left', 'left', 'X', 'Y'])
+  ```
+
+* **pyautogui.keyDown()** and **pyautogui.keyUp()** and **pyautogui.press()**
+
+If you need to type a string into a text field, the `typewrite()` function is more suitable. But for applications that take single-key commands, the `press()` function is the simpler approach.
+
+* **pyautogui.hotkey()** #  takes multiple keyboard key string arguments, presses them in order, and releases them in the reverse order. 
+
+  ```python
+  pyautogui.hotkey('ctrl', 'c')
+  pyautogui.hotkey('ctrl', 'alt', 'shift', 's')
+  ```
+
+  ​

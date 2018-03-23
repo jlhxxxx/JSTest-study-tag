@@ -8,7 +8,7 @@ from email.header import Header
 smtpObj = smtplib.SMTP('smtp.qq.com', 587)
 smtpObj.ehlo()
 smtpObj.starttls()
-smtpObj.login('942900182@qq.com', 'lzcexjeoobnsbajg')  # 建议使用input输入密码
+smtpObj.login('942900182@qq.com', 'password')  # 建议使用input输入密码
 
 message = MIMEText('Python 邮件发送测试...', 'plain', 'utf-8')
 # message['From'] = Header("菜鸟教程", 'utf-8')

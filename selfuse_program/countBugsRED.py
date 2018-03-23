@@ -2,6 +2,15 @@
 # countBugsRED.py - count bugs from redmine, then write to a csv
 '''
 使用方法：安装python3，将此文件和redmine平台导出的csv文件（默认为issues.csv）放到同一目录下，然后在此目录下运行cmd，输入“python countBugsRED.py”
+
+注意：
+本程序只根据特定规则统计；
+被拒绝缺陷按照状态为'被拒绝的'统计；
+残留缺陷按照状态为'挂起的'统计；
+缺陷分布统计只统计所填写模块的最子模块，所以可能有模块重名的问题；
+缺陷原因统计以开发填写为准，若开发未填写则取测试填写的原因；
+发现bug版本按目标版本统计，若未填目标版本，统计版本为''（空值）；
+可能还存在其他问题，报告应根据实际情况修正。
 '''
 
 import csv, re, datetime
@@ -19,21 +28,17 @@ def sortDict(dic, pos=1, *li):
         li = list(li[0])
         for e in li:
             if e in dic:
-                out.append([e, dic[e]])
+                out.append([e.upper(), dic[e]])
         return out
     else:
         for k, v in dic.items():
-            out.append((k, v))
+            out.append((k.upper(), v))
         return sorted(out, key=lambda e: e[pos], reverse=pos)
 
 
 # 所属模块识别，只取最子模块(模块名称可包含中文字母数字，模块分隔符为非中文字母数字)
 # 1级模块 - 2级模块 ，3级模块  
 moduleRegex = re.compile(r'([\u4e00-\u9fa5a-zA-Z0-9]+)\s*$')
-
-# redmine版本识别，只取201开头8位数字
-# v20180404版本，v20180307(#32)
-versionRegex = re.compile(r'(201[\d]{5})')
 
 # open csv
 csvname = 'issues.csv'
@@ -48,13 +53,11 @@ gradeNum = titles.index('Bug等级')
 moduleNum = titles.index('所属模块')
 reasonNum = titles.index('BUG原因（开发定位）')
 reopenNum = titles.index('被重新打开次数')
-
-treasonNum = titles.index('BUG原因（测试定位）')
-closeNum = titles.index('BUG关闭版本')
-buildNum = titles.index('开始日期')
-
+versionNum = titles.index('目标版本')
 projectNum = titles.index('项目')
 project = bugsList[1][projectNum] + '缺陷统计'
+
+treasonNum = titles.index('BUG原因（测试定位）')
 
 # --- 初始化 ---
 # 跟踪
@@ -78,11 +81,9 @@ moduleCount = {}
 # bug提出版本
 versionCount = {}
 
-# bug建立版本
-buildCount = {}
 
 # count all
-versionSet = set([])
+# versionSet = set([])
 for i in range(1, len(bugsList)):
     # bug状态统计
     statusCount.setdefault(bugsList[i][statusNum], 0)
@@ -119,32 +120,9 @@ for i in range(1, len(bugsList)):
     module = moduleRegex.search(bugsList[i][moduleNum]).group(1)
     moduleCount.setdefault(module, 0)
     moduleCount[module] += 1
-
-    # 提出bug时间（有效BUG）：转换成'Vyyyymmdd'格式，便于和版本比较
-    buildtime = 'V' + datetime.datetime.strptime(bugsList[i][buildNum], '%Y/%m/%d').strftime('%Y%m%d')
-    buildCount.setdefault(buildtime, 0)
-    buildCount[buildtime] += 1
-    # 获得所有版本set（有效BUG）（过滤没填关闭版本的bug）
-    if bugsList[i][closeNum] != '':
-        version = 'V' + versionRegex.search(bugsList[i][closeNum]).group(1)
-        versionSet.add(version)
-
-
-# 统计提出bug版本，思路为取出所有bug关闭版本和bug最早提出时间组成版本list，再按bug提出时间判断：晚于等于上一版本早于当前版本时间提出的bug算上一版本提出的bug
-versionTitle = sorted(list(versionSet))
-versionTitle.insert(0, sorted(list(buildCount))[1])
-for v in versionTitle[1:]:
-    for k in buildCount.keys():
-        if k < v:
-            versionCount.setdefault(versionTitle[versionTitle.index(v)-1], 0)
-            versionCount[versionTitle[versionTitle.index(v)-1]] += buildCount[k]
-            buildCount[k] = 0
-        # 如果还有在最晚关闭版本之后提出的bug，自动转换成倒数第二个版本提出的bug（所以至少要有2个版本）
-        if k > versionTitle[-1]:
-            versionCount.setdefault(versionTitle[-2], 0)
-            versionCount[versionTitle[-2]] += buildCount[k]
-            buildCount[k] = 0
-
+    # 按照发现缺陷版本统计（有效）
+    versionCount.setdefault(bugsList[i][versionNum], 0)
+    versionCount[bugsList[i][versionNum]] += 1
 
 # write to a csv
 outputFile = open(project+'.csv', 'w', newline='')

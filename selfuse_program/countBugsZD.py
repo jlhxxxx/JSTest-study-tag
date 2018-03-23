@@ -2,6 +2,14 @@
 # countBugsZD.py - count bugs from zentao, then write to a csv
 '''
 使用方法：安装python3，将此文件和禅道平台导出的csv文件放到同一目录下，然后在此目录下运行cmd，输入“python countBugsZD.py”，根据提示输入文件名
+
+注意：
+本程序只根据特定规则统计；
+被拒绝缺陷按照解决方案['不是BUG，测试需求理解错误', '不是BUG，测试操作错误']统计；
+残留缺陷按照解决方案为'优化建议，暂不修改'或状态'未关闭'统计；
+缺陷分布统计只统计所填写模块的最子模块，所以可能有模块重名的问题，未填写模块的统计为'其他'；
+bug发现版本按影响版本统计，如果有多个只取第一个；
+可能还存在其他问题，报告应根据实际情况修正。
 '''
 
 import csv, re, datetime
@@ -19,11 +27,11 @@ def sortDict(dic, pos=1, *li):
         li = list(li[0])
         for e in li:
             if e in dic:
-                out.append([e, dic[e]])
+                out.append([e.upper(), dic[e]])
         return out
     else:
         for k, v in dic.items():
-            out.append((k, v))
+            out.append((k.upper(), v))
         return sorted(out, key=lambda e: e[pos], reverse=pos)
 
 
@@ -31,9 +39,9 @@ def sortDict(dic, pos=1, *li):
 # 110联动登记(#408)
 moduleRegex = re.compile(r'(.+)\(#\d+\)$')
 
-# redmine版本识别，只取201开头8位数字
-# v20180404版本，v20180307(#32)
-versionRegex = re.compile(r'(201[\d]{5})')
+# redmine版本识别，去掉尾部（#xx）,有多个影响版本只取第一个
+# v20180102(#31)\nv20180307(#32)
+versionRegex = re.compile(r'^(.+)?\(#\d+\)')
 
 # open csv
 csvname = input('请输入待分析的csv文件名（带扩展名）：')
@@ -49,9 +57,7 @@ gradeNum = titles.index('严重程度')
 moduleNum = titles.index('所属模块')
 reasonNum = titles.index('解决方案')
 reopenNum = titles.index('激活次数')
-
 versionNum = titles.index('影响版本')
-
 projectNum = titles.index('所属项目')
 project = bugsList[1][projectNum] + '缺陷统计'
     
@@ -118,16 +124,10 @@ for i in range(1, len(bugsList)):
         moduleCount.setdefault('其他', 0)
         moduleCount['其他'] += 1
 
-    # 影响版本统计（有效BUG）
-    temp = versionRegex.search(bugsList[i][versionNum])
-    if temp is not None:
-        version = 'V' + temp.group(1)
-        versionCount.setdefault(version, 0)
-        versionCount[version] += 1
-    else:
-        versionCount.setdefault('其他', 0)
-        versionCount['其他'] += 1
-
+    # 发现版本统计（有效BUG）
+    version = versionRegex.search(bugsList[i][versionNum]).group(1)
+    versionCount.setdefault(version, 0)
+    versionCount[version] += 1
 
 # write to a csv
 outputFile = open(project+'.csv', 'w', newline='')

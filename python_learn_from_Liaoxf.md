@@ -287,7 +287,7 @@
     >>> calc(nums[0], nums[1], nums[2])
     14
     # 调用简化
-    >>> cale(*num)
+    >>> cale(*nums)
     14
     ```
 
@@ -375,7 +375,7 @@
 * 迭代
   * 在 Python 中，迭代是通过 `for ... in` 来完成的
   * 默认情况下，dict 迭代的是 key。如果要迭代 value，可以用 `for value in d.values()`，如果要同时迭代 key 和 value，可以用 `for k, v in d.items()`。
-  * 如果要对 list 实现类似 Java 那样的下标循环怎么办？Python 内置的 enumerate 函数可以把一个 list 变成索引——元素对，这样就可以在 for 循环中同时迭代索引和元素本身：
+  * 如果要对 list 实现类似 Java 那样的下标循环怎么办？Python 内置的 `enumerate` 函数可以把一个 list 变成索引——元素对，这样就可以在 for 循环中同时迭代索引和元素本身：
 
     ```python
     >>> for i, value in enumerate(['A', 'B', 'C']):
@@ -431,6 +431,7 @@
   * 生成器都是 Iterator 对象，但 list、dict、str 虽然是 Iterable，却不是 Iterator。把list、dict、str等 Iterable 变成 Iterator 可以使用 `iter()` 函数：
 
     ```python
+    >>> from collections import Iterator
     >>> isinstance(iter([]), Iterator)
     True
     >>> isinstance(iter('abc'), Iterator)

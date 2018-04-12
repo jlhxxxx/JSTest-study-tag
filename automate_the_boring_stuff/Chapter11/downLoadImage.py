@@ -63,12 +63,7 @@ for board in boardList:
     pinList = []
     getPinList(board, pinList)
     for pin in pinList:
-        try:
-            downImg(pin, boardPath)
-        except TimeoutError:
-            time.sleep(5)
-            print('TimeoutError')
-            continue
+        downImg(pin, boardPath)
 
 
 print('done')    

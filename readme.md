@@ -20,5 +20,4 @@
 
 
 * [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/)
-
-  ​
+* [A Programmer's Guide to Data Mining](http://guidetodatamining.com/)

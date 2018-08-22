@@ -37,7 +37,7 @@ def downImg(pin, path):
 
     pinPath = os.path.join(path, pin[0]+'.'+pin[3])
     print(pinPath)
-    imageFile = open(pinPath, 'wb')
+    imageFile = open(checkcode.png, 'wb')
     for chunk in res.iter_content(100000):
         imageFile.write(chunk)
     imageFile.close()

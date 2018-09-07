@@ -649,21 +649,15 @@ del 语句删除名称，而不是对象。del 命令可能会导致对象被当
     class A:
         def ping(self):
             print('ping:', self)
-
-
-​    
+    
     class B(A):
         def pong(self):
             print('pong:', self)
-
-
-​    
+    
     class C(A):
         def pong(self):
             print('PONG:', self)
-
-
-​    
+    
     class D(B, C):
     
         def ping(self):
@@ -677,7 +671,7 @@ del 语句删除名称，而不是对象。del 命令可能会导致对象被当
             super().pong()
             C.pong(self)
 
-dss
+调用：
 
     :::python
     >>> from diamond import *
@@ -694,7 +688,7 @@ dss
     pong: <diamond.D object at 0x10066c278>
     PONG: <diamond.D object at 0x10bf235c0> 
 
-❶ 直接调用 d.pong() 运行的是 B 类中的版本。Python 能区分 d.pong() 调用的是哪个方法，是因为 Python 会按照特定的顺序遍历继承图。这个顺序叫方法解析顺序（Method Resolution Order，MRO）。类都有一个名为` __mro__ `的属性，它的值是一个元组，按照方法解析顺序列出各个超类，从当前类一直向上，直到 object 类。
+❶ 直接调用 `d.pong()` 运行的是 B 类中的版本。Python 能区分 `d.pong()` 调用的是哪个方法，是因为 Python 会按照特定的顺序遍历继承图。这个顺序叫方法解析顺序（Method Resolution Order，MRO）。类都有一个名为` __mro__ `的属性，它的值是一个元组，按照方法解析顺序列出各个超类，从当前类一直向上，直到 object 类。
 
     :::python
     >>> D.__mro__
@@ -739,5 +733,4 @@ dss
   如果抽象基类或混入的组合对客户代码非常有用，那就提供一个类，使用易于理解的方式把它们结合起来。Grady Booch 把这种类称为聚合类（aggregate class）。
 
 * “优先使用对象组合，而不是类继承”
-
 

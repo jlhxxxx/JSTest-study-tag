@@ -734,3 +734,181 @@ del 语句删除名称，而不是对象。del 命令可能会导致对象被当
 
 * “优先使用对象组合，而不是类继承”
 
+### 14.2 可迭代的对象与迭代器的对比
+
+**可迭代的对象**：使用 iter 内置函数可以获取迭代器的对象。如果对象实现了能返回迭代器的` __iter__ `方法，那么对象就是可迭代的。序列都可以迭代；实现了` __getitem__ `方法，而且其参数是从零开始的索引，这种对象也可以迭代。
+
+**迭代器**是这样的对象：实现了无参数的` __next__ `方法，返回序列中的下一个元素；如果没有元素了，那么抛出 StopIteration 异常。Python 中的迭代器还实现了` __iter__ `方法，因此迭代器也可以迭代。
+
+可迭代的对象一定不能是自身的迭代器。也就是说，可迭代的对象必须实现` __iter__ `方法，但不能实现 `__next__ `方法。
+
+### 14.10 yield from
+
+    :::python
+    >>> def chain(*iterables):
+    ...     for i in iterables:
+    ...         yield from i
+    ...
+    >>> s = 'ABC'
+    >>> t = tuple(range(3))
+    >>> list(chain(s, t))
+    ['A', 'B', 'C', 0, 1, 2]
+
+### 15.1 if语句之外的else块
+
+for/else、while/else 和 try/else
+
+* 仅当 for 循环运行完毕时（即 for 循环没有被 break 语句中止）才运行 else 块
+* 仅当 while 循环因为条件为假值而退出时（即 while 循环没有被 break 语句中止）才运行 else 块
+* 仅当 try 块中没有异常抛出时才运行 else 块
+
+### 15.2 上下文管理器和with块
+
+```
+:::python
+>>> with open('mirror.py') as fp:
+...     src = fp.read(60)
+...
+>>> len(src)
+60
+>>> fp
+<_io.TextIOWrapper name='mirror.py' mode='r' encoding='UTF-8'>
+>>> fp.closed, fp.encoding  
+(True, 'UTF-8')
+>>> fp.read(60)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: I/O operation on closed file.
+```
+
+上下文管理器协议包含 __enter__ 和 __exit__ 两个方法。with 语句开始运行时，会在上下文管理器对象上调用 __enter__ 方法。with 语句运行结束后，会在上下文管理器对象上调用 __exit__ 方法，以此扮演 finally 子句的角色。举例：
+
+```
+:::python
+>>> from mirror import LookingGlass
+>>> with LookingGlass() as what: 
+...      print('Alice, Kitty and Snowdrop') 
+...      print(what)
+...
+pordwonS dna yttiK ,ecilA 
+YKCOWREBBAJ
+>>> what 
+'JABBERWOCKY'
+>>> print('Back to normal.') 
+Back to normal.
+```
+
+mirror.py：
+
+```
+:::python
+class LookingGlass:
+
+    def __enter__(self):  
+        import sys
+        self.original_write = sys.stdout.write ➊ 
+        sys.stdout.write = self.reverse_write ❷  
+        return 'JABBERWOCKY'
+
+    def reverse_write(self, text):
+        self.original_write(text[::-1])
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        import sys
+        sys.stdout.write = self.original_write
+        if exc_type is ZeroDivisionError:
+            print('Please DO NOT divide by zero!')
+            return True
+```
+
+➊ 把原来的 sys.stdout.write 方法保存在一个实例属性中，供后面使用。
+
+❷ 为 sys.stdout.write 打猴子补丁，替换成自己编写的方法。
+
+### 15.4 使用@contextmanager
+
+mirror.py：
+
+```
+:::python
+import contextlib
+
+@contextlib.contextmanager
+def looking_glass():
+    import sys
+    original_write = sys.stdout.write
+
+    def reverse_write(text):
+        original_write(text[::-1])
+
+    sys.stdout.write = reverse_write
+    msg = ''  
+    try:
+        yield 'JABBERWOCKY'  ➊
+    except ZeroDivisionError: 
+        msg = 'Please DO NOT divide by zero!'
+    finally:
+        sys.stdout.write = original_write  ➋
+        if msg:
+            print(msg)  
+```
+
+❶ 产出一个值，这个值会绑定到 with 语句中 as 子句的目标变量上。执行 with 块中的代码时，这个函数会在这一点暂停。
+
+❷ 控制权一旦跳出 with 块，继续执行 yield 语句之后的代码。
+
+使用 @contextmanager 装饰器时，要把 yield 语句放在 try/finally 语句中（或者放在 with 语句中），这是无法避免的，因为我们永远不知道上下文管理器的用户会在 with 块中做什么。在 @contextmanager 装饰器装饰的生成器中，yield 与迭代没有任何关系。在本节所举的示例中，生成器函数的作用更像是协程：执行到某一点时暂停，让客户代码运行，直到客户让协程继续做事。
+
+
+
+```
+:::python
+>>> D.__mro__
+(<class 'diamond.D'>, <class 'diamond.B'>, <class 'diamond.C'>,
+<class 'diamond.A'>, <class 'object'>)
+
+```
+
+❷ 超类中的方法
+
+❷ 控制权一旦跳出 with 块，继续执行 yield 语句之后的代码。
+
+值是一个元组，按照方法解析顺序列出各个超类，从当前类一直向上，直到 object 类。
+
+```
+:::python
+>>> D.__mro__
+(<class 'diamond.D'>, <class 'diamond.B'>, <class 'diamond.C'>,
+<class 'diamond.A'>, <class 'object'>)
+
+```
+
+❷ 超类中的方法
+
+❷ 控制权一旦跳出 with 块，继续执行 yield 语句之后的代码。
+
+值是一个元组，按照方法解析顺序列出各个超类，从当前类一直向上，直到 object 类。
+
+```
+:::python
+>>> D.__mro__
+(<class 'diamond.D'>, <class 'diamond.B'>, <class 'diamond.C'>,
+<class 'diamond.A'>, <class 'object'>)
+
+```
+
+❷ 超类中的方法
+
+❷ 控制权一旦跳出 with 块，继续执行 yield 语句之后的代码。
+
+值是一个元组，按照方法解析顺序列出各个超类，从当前类一直向上，直到 object 类。
+
+```
+:::python
+>>> D.__mro__
+(<class 'diamond.D'>, <class 'diamond.B'>, <class 'diamond.C'>,
+<class 'diamond.A'>, <class 'object'>)
+
+```
+
+❷ 超类中的方法
